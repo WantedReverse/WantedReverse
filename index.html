@@ -39,15 +39,15 @@
 
         header { width: 100%; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; background: rgba(0,0,0,0.95); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; }
         .brand { font-size: 1.5rem; font-weight: 900; color: var(--amarillo); letter-spacing: -1px; cursor: pointer; }
+        
         .lang-switch { font-size: 0.7rem; background: #222; border: 1px solid #444; color: #fff; padding: 5px; border-radius: 5px; cursor: pointer; }
 
         .container { width: 95%; max-width: 450px; margin-top: 20px; }
 
-        /* TENDENCIAS GLOBALES */
         .trending-bar { width: 100%; overflow: hidden; background: #1a1a1a; padding: 10px 0; border-bottom: 1px solid #333; margin-bottom: 20px; font-size: 0.75rem; white-space: nowrap; }
-        .trending-track { display: inline-block; animation: scroll 25s linear infinite; }
+        .trending-track { display: inline-block; animation: scroll 20s linear infinite; }
         @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
-        .trending-item { margin-right: 40px; color: var(--gris-texto); }
+        .trending-item { margin-right: 30px; color: var(--gris-texto); }
         .trending-item span { color: var(--amarillo); font-weight: bold; }
 
         .card { background: var(--negro-card); padding: 30px; border-radius: 24px; border: 1px solid #333; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -58,18 +58,17 @@
         .btn-main { width: 100%; padding: 18px; background: var(--amarillo); color: #000; border: none; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
         .pedido-item { background: var(--negro-card); border: 1px solid #222; padding: 20px; border-radius: 20px; margin-bottom: 15px; text-align: left; }
-        .status-badge { font-size: 0.6rem; font-weight: 900; color: var(--verde-verificado); border: 1px solid var(--verde-verificado); padding: 2px 8px; border-radius: 4px; float: right; }
-        .prod-name { font-size: 1.2rem; font-weight: 900; color: var(--amarillo); text-transform: uppercase; display: block; }
+        .prod-name { font-size: 1.2rem; font-weight: 900; color: var(--amarillo); text-transform: uppercase; }
 
         .payment-group { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
-        .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
         .btn-dlocal { background: #fff; color: #000; }
         .btn-paypal { background: var(--azul-paypal); color: #fff; }
 
-        /* FAQ & LEGAL */
         .faq-section { background: #111; padding: 20px; border-radius: 15px; margin-top: 30px; text-align: left; }
         .faq-question { color: var(--amarillo); font-weight: bold; font-size: 0.85rem; margin-top: 10px; }
         .faq-answer { color: var(--gris-texto); font-size: 0.8rem; margin-bottom: 10px; line-height: 1.4; }
+
         .legal-link { font-size: 0.7rem; color: var(--gris-texto); cursor: pointer; display: block; text-align: center; margin-top: 20px; text-decoration: underline; }
         #legalModal { display: none; font-size: 0.75rem; color: #ccc; text-align: left; background: #000; padding: 20px; border-radius: 15px; border: 1px solid #444; margin-top: 15px; }
     </style>
@@ -89,14 +88,16 @@
             <span class="trending-item">🔥 Tendencia: <span>Teléfonos Inteligentes</span></span>
             <span class="trending-item">🔥 Tendencia: <span>Repuestos Automotrices</span></span>
             <span class="trending-item">🔥 Tendencia: <span>PlayStation 5</span></span>
-            <span class="trending-item">🔥 Tendencia: <span>Hardware PC / GPU</span></span>
+            <span class="trending-item">🔥 Tendencia: <span>Hardware PC</span></span>
+            <span class="trending-item">🔥 Tendencia: <span>Calzado Pro</span></span>
         </div>
     </div>
 
     <div class="container">
         <div id="authSection" class="card">
             <h1 id="txt-h1">CONEXIÓN DE <span>VENTAS GLOBAL</span></h1>
-            <p id="txt-sub" style="font-size: 0.8rem; color: var(--gris-texto); margin-bottom: 20px;">Donde los compradores publican y los vendedores compiten.</p>
+            <p id="txt-sub" style="font-size: 0.8rem; color: var(--gris-texto); margin-bottom: 20px;">La plataforma donde los compradores publican y los vendedores compiten.</p>
+            
             <form id="authForm">
                 <input type="email" id="email" placeholder="Email" required>
                 <input type="password" id="pass" placeholder="Password" required minlength="6">
@@ -111,7 +112,7 @@
                 <form id="orderForm">
                     <input type="text" id="prod" placeholder="Ej: iPhone 15 Pro Max" required>
                     <input type="number" id="cant" placeholder="Cantidad" required>
-                    <button type="submit" class="btn-main" id="btn-launch">LANZAR AL MERCADO</button>
+                    <button type="submit" class="btn-main" id="btn-launch">LANZAR PEDIDO</button>
                 </form>
             </div>
 
@@ -119,18 +120,18 @@
 
             <div class="faq-section" id="faq-box">
                 <h3 id="txt-faq-title" style="margin-top:0;">Preguntas Frecuentes</h3>
-                <div class="faq-question">¿Por qué debo pagar $3,73 USD?</div>
-                <div class="faq-answer">Es la tasa de conexión que garantiza que solo vendedores reales accedan a los datos, evitando spam y estafas para el comprador.</div>
+                <div class="faq-question">¿Por qué pagar $3,73 USD?</div>
+                <div class="faq-answer">Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos, evitando spam y estafas.</div>
                 <div class="faq-question">¿Qué recibo al pagar?</div>
-                <div class="faq-answer">Acceso inmediato al contacto (Email/WhatsApp) del comprador para que cierres la venta directamente.</div>
+                <div class="faq-answer">Obtienes acceso directo al contacto (Email/WhatsApp) del comprador para cerrar la venta sin intermediarios.</div>
             </div>
             
             <p class="legal-link" onclick="toggleLegal()">Ver Términos y Protección Legal</p>
             <div id="legalModal">
                 <strong>TÉRMINOS Y CONDICIONES (WANTED)</strong><br><br>
-                1. <strong>Naturaleza:</strong> WANTED es una plataforma de conexión, no vende productos físicos.<br>
-                2. <strong>Tasa:</strong> El pago de conexión desbloquea el contacto del comprador.<br>
-                3. <strong>No Reembolso:</strong> Por ser un bien digital de revelación inmediata, no se aceptan devoluciones una vez realizado el pago.<br>
+                1. <strong>Naturaleza:</strong> WANTED facilita la conexión entre demanda y oferta.<br>
+                2. <strong>Tasa de Conexión:</strong> El pago desbloquea la identidad del comprador interesado.<br>
+                3. <strong>No Reembolso:</strong> Por la naturaleza del servicio digital inmediato, no se realizan devoluciones tras el pago.<br>
             </div>
 
             <p onclick="signOut()" style="color:red; font-size:0.7rem; cursor:pointer; text-align:center; margin-top:40px; opacity:0.5;">CERRAR SESIÓN SEGURA</p>
@@ -145,6 +146,7 @@
 
         let currency = "USD";
         let language = "es";
+        let modeLogin = true;
 
         async function checkLocation() {
             try {
@@ -152,6 +154,13 @@
                 const data = await res.json();
                 if(data.country === 'AR') currency = "ARS";
             } catch (e) { currency = "USD"; }
+        }
+
+        function toggleMode() {
+            modeLogin = !modeLogin;
+            document.getElementById('txt-h1').innerHTML = modeLogin ? 'CONEXIÓN DE <span>VENTAS GLOBAL</span>' : 'REGISTRO DE <span>IDENTIDAD REAL</span>';
+            document.getElementById('btn-auth').innerText = modeLogin ? 'ACCEDER AL SISTEMA' : 'REGISTRARME';
+            document.getElementById('switchBtn').innerText = modeLogin ? '¿Nuevo usuario? Crear cuenta' : '¿Ya tienes cuenta? Iniciar sesión';
         }
 
         function toggleLegal() {
@@ -162,11 +171,10 @@
         function changeLanguage() {
             language = document.getElementById('langSelector').value;
             const t = {
-                es: { h1: "CONEXIÓN DE <span>VENTAS GLOBAL</span>", sub: "Donde los compradores mandan.", auth: "ACCEDER", publish: "Lanzar al Mercado" },
-                en: { h1: "GLOBAL <span>SALES CONNECT</span>", sub: "Where buyers take control.", auth: "LOGIN", publish: "Launch to Market" }
+                es: { h1: "CONEXIÓN DE <span>VENTAS GLOBAL</span>", sub: "La plataforma donde los compradores mandan.", auth: "ACCEDER", publish: "Lanzar Pedido" },
+                en: { h1: "GLOBAL <span>SALES CONNECT</span>", sub: "Where buyers take control.", auth: "LOGIN", publish: "LAUNCH ORDER" }
             };
             document.getElementById('txt-h1').innerHTML = t[language].h1;
-            document.getElementById('txt-sub').innerText = t[language].sub;
             document.getElementById('btn-auth').innerText = t[language].auth;
             renderPedidos();
         }
@@ -175,8 +183,15 @@
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('pass').value;
-            const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (error) alert(error.message);
+            
+            if (modeLogin) {
+                const { error } = await _supabase.auth.signInWithPassword({ email, password });
+                if (error) alert(error.message);
+            } else {
+                const { error } = await _supabase.auth.signUp({ email, password });
+                if (error) alert(error.message);
+                else alert("Registro exitoso. Revisa tu email.");
+            }
         });
 
         _supabase.auth.onAuthStateChange((event, session) => {
@@ -192,23 +207,21 @@
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
             
-            const priceLocal = (currency === "ARS") ? "≈ $4.500 ARS" : "$3,73 USD";
+            const price = (currency === "ARS") ? "4.500 ARS" : "3.73 USD";
             const btnText = (language === "es") ? "OFERTAR POR" : "BID FOR";
 
             data.forEach(p => {
-                const idOculto = p.nombre.charAt(0) + "********";
                 const card = document.createElement('div');
                 card.className = 'pedido-item';
                 card.innerHTML = `
-                    <span class="status-badge">VERIFICADO</span>
                     <span class="prod-name">${p.producto}</span>
-                    <p style="font-size:0.8rem; color:#888; margin:5px 0;">Cant: ${p.cantidad} | Loc: ${p.ubicacion || 'Global'}<br>ID: ${idOculto}</p>
+                    <p style="font-size:0.8rem; color:#888;">Cantidad: ${p.cantidad} | Ubicación: ${p.ubicacion || 'Global'}</p>
                     <div class="payment-group">
                         <button class="btn-offer btn-dlocal" onclick="window.location.href='https://dlocalgo.com/'">
-                            ${btnText} (LOCAL / MEP) <span>${priceLocal}</span>
+                            ${btnText} (LOCAL) <span>${price}</span>
                         </button>
                         <button class="btn-offer btn-paypal" onclick="window.location.href='https://paypal.me/wantedsolutions/3.73'">
-                            ${btnText} (PAYPAL / USD) <span>$ 3.73</span>
+                            ${btnText} (GLOBAL/USD) <span>3.73 USD</span>
                         </button>
                     </div>
                 `;
@@ -222,11 +235,11 @@
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
             const { error } = await _supabase.from('pedidos').insert([{ nombre: user.email, producto: prod, cantidad: parseInt(cant) }]);
-            if (!error) { renderPedidos(); alert("Pedido lanzado."); }
+            if (!error) { renderPedidos(); alert("Lanzado."); }
         });
 
         function signOut() { _supabase.auth.signOut(); location.reload(); }
         checkLocation();
     </script>
 </body>
-                </html>
+    </html>
