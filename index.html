@@ -149,27 +149,29 @@
         const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currency = "USD";
-        let userCountry = "Detectando..."; 
+        let userCountry = "Cargando..."; 
         let language = "es";
         let modeLogin = true;
 
-        // Función para obtener ubicación ANTES de cualquier otra acción
-        async function checkLocation() {
+        // NUEVA FUNCIÓN: Usa un servicio más confiable (ip-api.com)
+        async function fetchGeo() {
             try {
-                const res = await fetch('https://ipapi.co/json/');
-                const data = await res.json();
-                userCountry = data.country_name || "Global";
-                if(data.country === 'AR') currency = "ARS";
-                console.log("Ubicación detectada:", userCountry);
-                return userCountry;
-            } catch (e) { 
+                const response = await fetch('http://ip-api.com/json/');
+                const data = await response.json();
+                if(data.status === "success") {
+                    userCountry = data.country;
+                    if(data.countryCode === 'AR') currency = "ARS";
+                } else {
+                    userCountry = "Global";
+                }
+            } catch (error) {
                 userCountry = "Global";
-                return "Global";
             }
+            console.log("Ubicación fijada en:", userCountry);
         }
 
-        // Llamada inmediata al cargar el script
-        checkLocation();
+        // Ejecutar inmediatamente
+        fetchGeo();
 
         async function sendAlert(prod, cant, user, location) {
             const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
@@ -192,12 +194,6 @@
 
         function changeLanguage() {
             language = document.getElementById('langSelector').value;
-            const t = {
-                es: { h1: "CONEXIÓN DE <span>VENTAS GLOBAL</span>", sub: "La plataforma donde los compradores mandan.", auth: "ACCEDER", publish: "Publica lo que buscas..." },
-                en: { h1: "GLOBAL <span>SALES CONNECT</span>", sub: "Where buyers take control.", auth: "LOGIN", publish: "Post what you want..." }
-            };
-            document.getElementById('txt-h1').innerHTML = t[language].h1;
-            document.getElementById('btn-auth').innerText = t[language].auth;
             renderPedidos();
         }
 
@@ -220,7 +216,8 @@
             if (session) {
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('mainPanel').style.display = 'block';
-                if(userCountry === "Detectando...") await checkLocation();
+                // Aseguramos que la ubicación esté lista antes de mostrar pedidos
+                if(userCountry === "Cargando...") await fetchGeo();
                 renderPedidos();
             }
         });
@@ -254,29 +251,25 @@
         document.getElementById('orderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Forzar detección de ubicación si aún no está lista
-            let finalLocation = userCountry;
-            if(finalLocation === "Detectando...") {
-                finalLocation = await checkLocation();
-            }
+            // Si por alguna razón sigue cargando, esperamos
+            if(userCountry === "Cargando...") await fetchGeo();
 
             const { data: { user } } = await _supabase.auth.getUser();
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
             
+            // Guardamos la ubicación REAL en Supabase
             const { error } = await _supabase.from('pedidos').insert([{ 
                 nombre: user.email, 
                 producto: prod, 
                 cantidad: parseInt(cant),
-                ubicacion: finalLocation // Asegura el país real aquí
+                ubicacion: userCountry 
             }]);
             
             if (!error) { 
-                sendAlert(prod, cant, user.email, finalLocation);
+                sendAlert(prod, cant, user.email, userCountry);
                 renderPedidos(); 
                 document.getElementById('orderForm').reset();
-            } else {
-                alert("Error al lanzar pedido: " + error.message);
             }
         });
 
