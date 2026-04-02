@@ -37,9 +37,11 @@
 
         body { background-color: var(--negro-puro); color: var(--blanco); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
 
-        header { width: 100%; padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; background: rgba(0,0,0,0.95); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; }
-        .brand { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 900; color: var(--amarillo); letter-spacing: -1px; cursor: pointer; }
-        .brand img { height: 35px; width: auto; } /* Estilo para el logo */
+        header { width: 100%; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; background: rgba(0,0,0,0.95); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; }
+        
+        /* LOGO DE LA "W" ESTILIZADO CON CSS */
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 1.5rem; font-weight: 900; color: var(--amarillo); letter-spacing: -1px; cursor: pointer; }
+        .logo-icon { width: 35px; height: 35px; background: var(--amarillo); color: #000; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 1.4rem; font-weight: 900; }
         
         .lang-switch { font-size: 0.7rem; background: #222; border: 1px solid #444; color: #fff; padding: 5px; border-radius: 5px; cursor: pointer; }
 
@@ -78,7 +80,7 @@
 
     <header>
         <div class="brand" onclick="location.reload()">
-            <img src="logo.png" alt="Logo WANTED"> WANTED
+            <div class="logo-icon">W</div> WANTED
         </div>
         <select class="lang-switch" id="langSelector" onchange="changeLanguage()">
             <option value="es">ESPAÑOL</option>
@@ -111,7 +113,7 @@
 
         <div id="mainPanel" style="display: none;">
             <div class="card">
-                <h2 id="txt-publish" style="font-size: 1.2rem;">Publica lo que buscas y nuestra <span>red global de vendedores</span> competirá por ofrecerte el mejor precio del mercado.</h2>
+                <h2 id="txt-publish" style="font-size: 1.1rem; line-height: 1.4;">Publica lo que buscas y nuestra <span>red global de vendedores</span> competirá por ofrecerte el mejor precio del mercado.</h2>
                 <form id="orderForm">
                     <input type="text" id="prod" placeholder="Ej: iPhone 15 Pro Max" required>
                     <input type="number" id="cant" placeholder="Cantidad" required>
@@ -151,13 +153,12 @@
         let language = "es";
         let modeLogin = true;
 
+        // Función de Telegram Silenciosa con tus credenciales
         async function sendAlert(prod, cant, user) {
             const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
             const chatId = '7660494923'; 
             const msg = `🚨 WANTED: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}`;
-            
-            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`)
-            .catch(err => console.error('Error enviando alerta:', err));
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
         }
 
         async function checkLocation() {
@@ -253,9 +254,6 @@
                 sendAlert(prod, cant, user.email);
                 renderPedidos(); 
                 document.getElementById('orderForm').reset();
-                // Notificación de pantalla eliminada como pediste
-            } else {
-                console.error("Error: " + error.message);
             }
         });
 
@@ -263,4 +261,4 @@
         checkLocation();
     </script>
 </body>
-    </html>
+                </html>
