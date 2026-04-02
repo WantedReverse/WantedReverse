@@ -64,7 +64,7 @@
 
         .payment-group { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
         .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
-        .btn-dlocal { background: #333; color: #888; cursor: not-allowed; } /* Casillero de espera */
+        .btn-dlocal { background: #333; color: #888; cursor: not-allowed; } 
         .btn-paypal { background: var(--azul-paypal); color: #fff; }
 
         .faq-section { background: #111; padding: 20px; border-radius: 15px; margin-top: 30px; text-align: left; }
@@ -149,7 +149,7 @@
         const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currency = "USD";
-        let userCountry = "Global";
+        let userCountry = "Detectando..."; 
         let language = "es";
         let modeLogin = true;
 
@@ -160,15 +160,18 @@
             fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
         }
 
+        // MODIFICACIÓN: Función de geolocalización mejorada
         async function checkLocation() {
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
                 userCountry = data.country_name || "Global";
                 if(data.country === 'AR') currency = "ARS";
+                return true;
             } catch (e) { 
                 userCountry = "Global";
                 currency = "USD"; 
+                return false;
             }
         }
 
@@ -210,11 +213,12 @@
             }
         });
 
-        _supabase.auth.onAuthStateChange((event, session) => {
+        _supabase.auth.onAuthStateChange(async (event, session) => {
             if (session) {
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('mainPanel').style.display = 'block';
-                checkLocation().then(() => renderPedidos());
+                await checkLocation(); // Espera a que cargue el país antes de renderizar
+                renderPedidos();
             }
         });
 
@@ -247,6 +251,10 @@
 
         document.getElementById('orderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Verificamos que ya tengamos la ubicación antes de enviar
+            if(userCountry === "Detectando...") await checkLocation();
+
             const { data: { user } } = await _supabase.auth.getUser();
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
@@ -255,7 +263,7 @@
                 nombre: user.email, 
                 producto: prod, 
                 cantidad: parseInt(cant),
-                ubicacion: userCountry 
+                ubicacion: userCountry // Guarda el país real detectado
             }]);
             
             if (!error) { 
@@ -269,4 +277,4 @@
         checkLocation();
     </script>
 </body>
-                                                                                     </html>
+                                                                            </html>
