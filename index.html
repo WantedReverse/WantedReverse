@@ -37,8 +37,9 @@
 
         body { background-color: var(--negro-puro); color: var(--blanco); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
 
-        header { width: 100%; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; background: rgba(0,0,0,0.95); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; }
-        .brand { font-size: 1.5rem; font-weight: 900; color: var(--amarillo); letter-spacing: -1px; cursor: pointer; }
+        header { width: 100%; padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; background: rgba(0,0,0,0.95); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; }
+        .brand { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 900; color: var(--amarillo); letter-spacing: -1px; cursor: pointer; }
+        .brand img { height: 35px; width: auto; } /* Estilo para el logo */
         
         .lang-switch { font-size: 0.7rem; background: #222; border: 1px solid #444; color: #fff; padding: 5px; border-radius: 5px; cursor: pointer; }
 
@@ -76,7 +77,9 @@
 <body>
 
     <header>
-        <div class="brand" onclick="toggleAdmin()">WANTED</div>
+        <div class="brand" onclick="location.reload()">
+            <img src="logo.png" alt="Logo WANTED"> WANTED
+        </div>
         <select class="lang-switch" id="langSelector" onchange="changeLanguage()">
             <option value="es">ESPAÑOL</option>
             <option value="en">ENGLISH</option>
@@ -108,7 +111,7 @@
 
         <div id="mainPanel" style="display: none;">
             <div class="card">
-                <h2 id="txt-publish">¿Qué estás <span>buscando comprar?</span></h2>
+                <h2 id="txt-publish" style="font-size: 1.2rem;">Publica lo que buscas y nuestra <span>red global de vendedores</span> competirá por ofrecerte el mejor precio del mercado.</h2>
                 <form id="orderForm">
                     <input type="text" id="prod" placeholder="Ej: iPhone 15 Pro Max" required>
                     <input type="number" id="cant" placeholder="Cantidad" required>
@@ -148,14 +151,12 @@
         let language = "es";
         let modeLogin = true;
 
-        // FUNCIÓN DE ALERTA TELEGRAM - AHORA CON CREDENCIALES INTEGRADAS
         async function sendAlert(prod, cant, user) {
-            const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; // TU TOKEN
-            const chatId = '7660494923'; // TU CHAT ID
+            const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
+            const chatId = '7660494923'; 
             const msg = `🚨 WANTED: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}`;
             
             fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`)
-            .then(response => console.log('Alerta enviada'))
             .catch(err => console.error('Error enviando alerta:', err));
         }
 
@@ -182,8 +183,8 @@
         function changeLanguage() {
             language = document.getElementById('langSelector').value;
             const t = {
-                es: { h1: "CONEXIÓN DE <span>VENTAS GLOBAL</span>", sub: "La plataforma donde los compradores mandan.", auth: "ACCEDER", publish: "Lanzar Pedido" },
-                en: { h1: "GLOBAL <span>SALES CONNECT</span>", sub: "Where buyers take control.", auth: "LOGIN", publish: "LAUNCH ORDER" }
+                es: { h1: "CONEXIÓN DE <span>VENTAS GLOBAL</span>", sub: "La plataforma donde los compradores mandan.", auth: "ACCEDER", publish: "Publica lo que buscas..." },
+                en: { h1: "GLOBAL <span>SALES CONNECT</span>", sub: "Where buyers take control.", auth: "LOGIN", publish: "Post what you want..." }
             };
             document.getElementById('txt-h1').innerHTML = t[language].h1;
             document.getElementById('btn-auth').innerText = t[language].auth;
@@ -246,18 +247,15 @@
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
             
-            // 1. Guardar en la base de datos
             const { error } = await _supabase.from('pedidos').insert([{ nombre: user.email, producto: prod, cantidad: parseInt(cant) }]);
             
             if (!error) { 
-                // 2. DISPARAR ALERTA TELEGRAM (Ahora con tus datos reales)
                 sendAlert(prod, cant, user.email);
-                
                 renderPedidos(); 
                 document.getElementById('orderForm').reset();
-                alert("Pedido lanzado con éxito. ¡Vibrará tu Telegram!"); 
+                // Notificación de pantalla eliminada como pediste
             } else {
-                alert("Error: " + error.message);
+                console.error("Error: " + error.message);
             }
         });
 
@@ -265,4 +263,4 @@
         checkLocation();
     </script>
 </body>
-                </html>
+    </html>
