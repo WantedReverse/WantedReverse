@@ -8,6 +8,17 @@
     <meta name="description" content="La plataforma global donde los compradores publican qué buscan y los vendedores compiten por ofrecer el precio más bajo. Comercio inteligente y seguro.">
     <meta name="keywords" content="compras, ventas, subasta inversa, marketplace global, ofertas, teléfonos inteligentes, repuestos, playstation">
     
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "WANTED",
+      "url": "https://tuusuario.github.io/wanted",
+      "logo": "https://tuusuario.github.io/wanted/logo.png",
+      "description": "Plataforma de subasta inversa para compras y ventas globales."
+    }
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     
@@ -52,7 +63,13 @@
         .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
         .btn-paypal { background: var(--azul-paypal); color: #fff; }
 
+        /* Estilos de FAQ y Legal añadidos nuevamente */
+        .faq-section { background: #111; padding: 20px; border-radius: 15px; margin-top: 30px; text-align: left; }
+        .faq-question { color: var(--amarillo); font-weight: bold; font-size: 0.85rem; margin-top: 10px; }
+        .faq-answer { color: var(--gris-texto); font-size: 0.8rem; margin-bottom: 10px; line-height: 1.4; }
+
         .legal-link { font-size: 0.7rem; color: var(--gris-texto); cursor: pointer; display: block; text-align: center; margin-top: 20px; text-decoration: underline; }
+        #legalModal { display: none; font-size: 0.75rem; color: #ccc; text-align: left; background: #000; padding: 20px; border-radius: 15px; border: 1px solid #444; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -61,7 +78,7 @@
         <div class="brand" onclick="location.reload()">
             <div class="logo-icon">W</div> WANTED
         </div>
-        <select class="lang-switch" id="langSelector">
+        <select class="lang-switch" id="langSelector" onchange="changeLanguage()">
             <option value="es">ESPAÑOL</option>
             <option value="en">ENGLISH</option>
         </select>
@@ -72,12 +89,15 @@
             <span class="trending-item">🔥 Tendencia: <span>Teléfonos Inteligentes</span></span>
             <span class="trending-item">🔥 Tendencia: <span>Repuestos Automotrices</span></span>
             <span class="trending-item">🔥 Tendencia: <span>PlayStation 5</span></span>
+            <span class="trending-item">🔥 Tendencia: <span>Hardware PC</span></span>
+            <span class="trending-item">🔥 Tendencia: <span>Calzado Pro</span></span>
         </div>
     </div>
 
     <div class="container">
         <div id="authSection" class="card">
             <h1 id="txt-h1">CONEXIÓN DE <span>VENTAS GLOBAL</span></h1>
+            <p id="txt-sub" style="font-size: 0.8rem; color: var(--gris-texto); margin-bottom: 20px;">La plataforma donde los compradores publican y los vendedores compiten.</p>
             <form id="authForm">
                 <input type="email" id="email" placeholder="Email" required>
                 <input type="password" id="pass" placeholder="Password" required minlength="6">
@@ -88,14 +108,32 @@
 
         <div id="mainPanel" style="display: none;">
             <div class="card">
-                <h2 style="font-size: 1.1rem; line-height: 1.4;">Publica lo que buscas</h2>
+                <h2 id="txt-publish" style="font-size: 1.1rem; line-height: 1.4;">Publica lo que buscas y nuestra <span>red global de vendedores</span> competirá por ofrecerte el mejor precio.</h2>
                 <form id="orderForm">
                     <input type="text" id="prod" placeholder="Ej: iPhone 15 Pro Max" required>
                     <input type="number" id="cant" placeholder="Cantidad" required>
                     <button type="submit" class="btn-main" id="btn-launch">LANZAR PEDIDO</button>
                 </form>
             </div>
+
             <div id="feed"></div>
+
+            <div class="faq-section" id="faq-box">
+                <h3 style="margin-top:0; font-size: 1rem;">Preguntas Frecuentes</h3>
+                <div class="faq-question">¿Por qué pagar $3,73 USD?</div>
+                <div class="faq-answer">Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos, evitando spam y estafas.</div>
+                <div class="faq-question">¿Qué recibo al pagar?</div>
+                <div class="faq-answer">Obtienes acceso directo al contacto (Email/WhatsApp) del comprador para cerrar la venta sin intermediarios.</div>
+            </div>
+            
+            <p class="legal-link" onclick="toggleLegal()">Ver Términos y Protección Legal</p>
+            <div id="legalModal">
+                <strong>TÉRMINOS Y CONDICIONES (WANTED)</strong><br><br>
+                1. <strong>Naturaleza:</strong> WANTED facilita la conexión entre demanda y oferta.<br>
+                2. <strong>Tasa de Conexión:</strong> El pago desbloquea la identidad del comprador interesado.<br>
+                3. <strong>No Reembolso:</strong> Por la naturaleza del servicio digital inmediato, no se realizan devoluciones tras el pago.<br>
+            </div>
+
             <p onclick="signOut()" style="color:red; font-size:0.7rem; cursor:pointer; text-align:center; margin-top:40px; opacity:0.5;">CERRAR SESIÓN SEGURA</p>
         </div>
     </div>
@@ -107,9 +145,9 @@
         const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let userCountry = "Detectando..."; 
+        let language = "es";
         let modeLogin = true;
 
-        // CORRECCIÓN CLAVE: Usamos HTTPS para que el navegador no bloquee la detección
         async function fetchGeo() {
             try {
                 const response = await fetch('https://ipapi.co/json/');
@@ -118,7 +156,6 @@
             } catch (error) {
                 userCountry = "Global";
             }
-            console.log("Ubicación detectada:", userCountry);
         }
 
         fetchGeo();
@@ -134,6 +171,16 @@
             modeLogin = !modeLogin;
             document.getElementById('txt-h1').innerHTML = modeLogin ? 'CONEXIÓN DE <span>VENTAS GLOBAL</span>' : 'REGISTRO DE <span>IDENTIDAD REAL</span>';
             document.getElementById('btn-auth').innerText = modeLogin ? 'ACCEDER AL SISTEMA' : 'REGISTRARME';
+        }
+
+        function toggleLegal() {
+            const m = document.getElementById('legalModal');
+            m.style.display = m.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function changeLanguage() {
+            language = document.getElementById('langSelector').value;
+            renderPedidos();
         }
 
         document.getElementById('authForm').addEventListener('submit', async (e) => {
@@ -163,6 +210,9 @@
             const { data } = await _supabase.from('pedidos').select('*').order('id', { ascending: false });
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
+            
+            const btnText = (language === "es") ? "OFERTAR POR" : "BID FOR";
+
             data.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'pedido-item';
@@ -171,7 +221,7 @@
                     <p style="font-size:0.8rem; color:#888;">Cantidad: ${p.cantidad} | Ubicación: ${p.ubicacion || 'Global'}</p>
                     <div class="payment-group">
                         <button class="btn-offer btn-paypal" onclick="window.location.href='https://paypal.me/wantedsolutions/3.73'">
-                            OFERTAR (PAYPAL) <span>3.73 USD</span>
+                            ${btnText} (PAYPAL) <span>3.73 USD</span>
                         </button>
                     </div>
                 `;
@@ -204,4 +254,4 @@
         function signOut() { _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
-            </html>
+    </html>
