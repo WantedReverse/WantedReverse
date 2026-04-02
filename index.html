@@ -148,12 +148,15 @@
         let language = "es";
         let modeLogin = true;
 
-        // FUNCIÓN DE ALERTA TELEGRAM REINSTALADA
+        // FUNCIÓN DE ALERTA TELEGRAM - AHORA CON CREDENCIALES INTEGRADAS
         async function sendAlert(prod, cant, user) {
-            const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE';
-            const chatId = '7660494923';
+            const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; // TU TOKEN
+            const chatId = '7660494923'; // TU CHAT ID
             const msg = `🚨 WANTED: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}`;
-            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+            
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`)
+            .then(response => console.log('Alerta enviada'))
+            .catch(err => console.error('Error enviando alerta:', err));
         }
 
         async function checkLocation() {
@@ -243,14 +246,18 @@
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
             
+            // 1. Guardar en la base de datos
             const { error } = await _supabase.from('pedidos').insert([{ nombre: user.email, producto: prod, cantidad: parseInt(cant) }]);
             
             if (!error) { 
-                // ACTIVAR ALERTA TELEGRAM
+                // 2. DISPARAR ALERTA TELEGRAM (Ahora con tus datos reales)
                 sendAlert(prod, cant, user.email);
+                
                 renderPedidos(); 
                 document.getElementById('orderForm').reset();
-                alert("Lanzado con éxito."); 
+                alert("Pedido lanzado con éxito. ¡Vibrará tu Telegram!"); 
+            } else {
+                alert("Error: " + error.message);
             }
         });
 
