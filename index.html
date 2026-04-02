@@ -39,7 +39,6 @@
 
         header { width: 100%; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; background: rgba(0,0,0,0.95); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; }
         
-        /* LOGO DE LA "W" ESTILIZADO CON CSS */
         .brand { display: flex; align-items: center; gap: 12px; font-size: 1.5rem; font-weight: 900; color: var(--amarillo); letter-spacing: -1px; cursor: pointer; }
         .logo-icon { width: 35px; height: 35px; background: var(--amarillo); color: #000; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 1.4rem; font-weight: 900; }
         
@@ -65,7 +64,7 @@
 
         .payment-group { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
         .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
-        .btn-dlocal { background: #fff; color: #000; }
+        .btn-dlocal { background: #333; color: #888; cursor: not-allowed; } /* Casillero de espera */
         .btn-paypal { background: var(--azul-paypal); color: #fff; }
 
         .faq-section { background: #111; padding: 20px; border-radius: 15px; margin-top: 30px; text-align: left; }
@@ -150,14 +149,14 @@
         const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currency = "USD";
+        let userCountry = "Global";
         let language = "es";
         let modeLogin = true;
 
-        // Función de Telegram Silenciosa con tus credenciales
         async function sendAlert(prod, cant, user) {
             const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
             const chatId = '7660494923'; 
-            const msg = `🚨 WANTED: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}`;
+            const msg = `🚨 WANTED: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}\n📍 País: ${userCountry}`;
             fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
         }
 
@@ -165,8 +164,12 @@
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
+                userCountry = data.country_name || "Global";
                 if(data.country === 'AR') currency = "ARS";
-            } catch (e) { currency = "USD"; }
+            } catch (e) { 
+                userCountry = "Global";
+                currency = "USD"; 
+            }
         }
 
         function toggleMode() {
@@ -230,11 +233,11 @@
                     <span class="prod-name">${p.producto}</span>
                     <p style="font-size:0.8rem; color:#888;">Cantidad: ${p.cantidad} | Ubicación: ${p.ubicacion || 'Global'}</p>
                     <div class="payment-group">
-                        <button class="btn-offer btn-dlocal" onclick="window.location.href='https://dlocalgo.com/'">
-                            ${btnText} (LOCAL) <span>${price}</span>
+                        <button class="btn-offer btn-dlocal">
+                            PAGAR POR: (PRÓXIMAMENTE)
                         </button>
                         <button class="btn-offer btn-paypal" onclick="window.location.href='https://paypal.me/wantedsolutions/3.73'">
-                            ${btnText} (GLOBAL/USD) <span>3.73 USD</span>
+                            ${btnText} (PAYPAL) <span>3.73 USD</span>
                         </button>
                     </div>
                 `;
@@ -248,7 +251,12 @@
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
             
-            const { error } = await _supabase.from('pedidos').insert([{ nombre: user.email, producto: prod, cantidad: parseInt(cant) }]);
+            const { error } = await _supabase.from('pedidos').insert([{ 
+                nombre: user.email, 
+                producto: prod, 
+                cantidad: parseInt(cant),
+                ubicacion: userCountry 
+            }]);
             
             if (!error) { 
                 sendAlert(prod, cant, user.email);
@@ -261,4 +269,4 @@
         checkLocation();
     </script>
 </body>
-                </html>
+                                                                                     </html>
