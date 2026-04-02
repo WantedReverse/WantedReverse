@@ -148,6 +148,14 @@
         let language = "es";
         let modeLogin = true;
 
+        // FUNCIÓN DE ALERTA TELEGRAM REINSTALADA
+        async function sendAlert(prod, cant, user) {
+            const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE';
+            const chatId = '7660494923';
+            const msg = `🚨 WANTED: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}`;
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+        }
+
         async function checkLocation() {
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -234,12 +242,20 @@
             const { data: { user } } = await _supabase.auth.getUser();
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
+            
             const { error } = await _supabase.from('pedidos').insert([{ nombre: user.email, producto: prod, cantidad: parseInt(cant) }]);
-            if (!error) { renderPedidos(); alert("Lanzado."); }
+            
+            if (!error) { 
+                // ACTIVAR ALERTA TELEGRAM
+                sendAlert(prod, cant, user.email);
+                renderPedidos(); 
+                document.getElementById('orderForm').reset();
+                alert("Lanzado con éxito."); 
+            }
         });
 
         function signOut() { _supabase.auth.signOut(); location.reload(); }
         checkLocation();
     </script>
 </body>
-    </html>
+                </html>
