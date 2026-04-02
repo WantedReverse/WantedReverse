@@ -153,26 +153,29 @@
         let language = "es";
         let modeLogin = true;
 
-        async function sendAlert(prod, cant, user) {
-            const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
-            const chatId = '7660494923'; 
-            const msg = `🚨 WANTED: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}\n📍 País: ${userCountry}`;
-            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
-        }
-
-        // MODIFICACIÓN: Función de geolocalización mejorada
+        // Función para obtener ubicación ANTES de cualquier otra acción
         async function checkLocation() {
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
                 userCountry = data.country_name || "Global";
                 if(data.country === 'AR') currency = "ARS";
-                return true;
+                console.log("Ubicación detectada:", userCountry);
+                return userCountry;
             } catch (e) { 
                 userCountry = "Global";
-                currency = "USD"; 
-                return false;
+                return "Global";
             }
+        }
+
+        // Llamada inmediata al cargar el script
+        checkLocation();
+
+        async function sendAlert(prod, cant, user, location) {
+            const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
+            const chatId = '7660494923'; 
+            const msg = `🚨 WANTED: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}\n📍 País: ${location}`;
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
         }
 
         function toggleMode() {
@@ -217,7 +220,7 @@
             if (session) {
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('mainPanel').style.display = 'block';
-                await checkLocation(); // Espera a que cargue el país antes de renderizar
+                if(userCountry === "Detectando...") await checkLocation();
                 renderPedidos();
             }
         });
@@ -227,7 +230,6 @@
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
             
-            const price = (currency === "ARS") ? "4.500 ARS" : "3.73 USD";
             const btnText = (language === "es") ? "OFERTAR POR" : "BID FOR";
 
             data.forEach(p => {
@@ -252,8 +254,11 @@
         document.getElementById('orderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Verificamos que ya tengamos la ubicación antes de enviar
-            if(userCountry === "Detectando...") await checkLocation();
+            // Forzar detección de ubicación si aún no está lista
+            let finalLocation = userCountry;
+            if(finalLocation === "Detectando...") {
+                finalLocation = await checkLocation();
+            }
 
             const { data: { user } } = await _supabase.auth.getUser();
             const prod = document.getElementById('prod').value;
@@ -263,18 +268,19 @@
                 nombre: user.email, 
                 producto: prod, 
                 cantidad: parseInt(cant),
-                ubicacion: userCountry // Guarda el país real detectado
+                ubicacion: finalLocation // Asegura el país real aquí
             }]);
             
             if (!error) { 
-                sendAlert(prod, cant, user.email);
+                sendAlert(prod, cant, user.email, finalLocation);
                 renderPedidos(); 
                 document.getElementById('orderForm').reset();
+            } else {
+                alert("Error al lanzar pedido: " + error.message);
             }
         });
 
         function signOut() { _supabase.auth.signOut(); location.reload(); }
-        checkLocation();
     </script>
 </body>
-                                                                            </html>
+    </html>
