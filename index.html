@@ -6,8 +6,10 @@
     
     <title>WANTED | Compras y Ventas - Subasta Inversa Global</title>
     <meta name="description" content="La plataforma global donde los compradores publican qué buscan y los vendedores compiten por ofrecer el precio más bajo. Comercio inteligente y seguro.">
-    <meta name="keywords" content="compras, ventas, subasta inversa, marketplace global, ofertas, teléfonos inteligentes, repuestos, playstation">
+    <meta name="keywords" content="compras, ventas, subasta inversa, marketplace global, ofertas, teléfonos inteligentes, repuestos, playstation, relojes inteligentes">
     
+    <link rel="canonical" href="https://tuusuario.github.io/wanted/" />
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -15,11 +17,13 @@
       "name": "WANTED",
       "url": "https://tuusuario.github.io/wanted",
       "logo": "https://tuusuario.github.io/wanted/logo.png",
-      "description": "Plataforma de subasta inversa para compras y ventas globales."
+      "description": "Plataforma de subasta inversa para compras y ventas globales de tecnología y repuestos."
     }
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" as="style">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -63,7 +67,6 @@
         .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
         .btn-paypal { background: var(--azul-paypal); color: #fff; }
 
-        /* Estilos de FAQ y Legal añadidos nuevamente */
         .faq-section { background: #111; padding: 20px; border-radius: 15px; margin-top: 30px; text-align: left; }
         .faq-question { color: var(--amarillo); font-weight: bold; font-size: 0.85rem; margin-top: 10px; }
         .faq-answer { color: var(--gris-texto); font-size: 0.8rem; margin-bottom: 10px; line-height: 1.4; }
@@ -90,7 +93,7 @@
             <span class="trending-item">🔥 Tendencia: <span>Repuestos Automotrices</span></span>
             <span class="trending-item">🔥 Tendencia: <span>PlayStation 5</span></span>
             <span class="trending-item">🔥 Tendencia: <span>Hardware PC</span></span>
-            <span class="trending-item">🔥 Tendencia: <span>Calzado Pro</span></span>
+            <span class="trending-item">🔥 Tendencia: <span>Relojes Inteligentes</span></span>
         </div>
     </div>
 
@@ -121,9 +124,9 @@
             <div class="faq-section" id="faq-box">
                 <h3 style="margin-top:0; font-size: 1rem;">Preguntas Frecuentes</h3>
                 <div class="faq-question">¿Por qué pagar $3,73 USD?</div>
-                <div class="faq-answer">Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos, evitando spam y estafas.</div>
+                <div class="faq-answer">Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos, evitando spam y estafas en el marketplace.</div>
                 <div class="faq-question">¿Qué recibo al pagar?</div>
-                <div class="faq-answer">Obtienes acceso directo al contacto (Email/WhatsApp) del comprador para cerrar la venta sin intermediarios.</div>
+                <div class="faq-answer">Obtienes acceso directo al contacto (Email/WhatsApp) del comprador para cerrar la venta de repuestos o tecnología sin intermediarios.</div>
             </div>
             
             <p class="legal-link" onclick="toggleLegal()">Ver Términos y Protección Legal</p>
@@ -139,14 +142,24 @@
     </div>
 
     <script>
+        // La carga de Supabase se maneja mediante el atributo 'defer' en el head para mejor SEO
+        let _supabase;
+        
         const SUPABASE_URL = 'https://gtngqwnbyjqqmuzsztnv.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0bmdxd25ieWpxcW11enN6dG52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjgyMzksImV4cCI6MjA4ODk0NDIzOX0.vSxxHrayzEJG_HwRXcyOCb5vZuDZksrQe6GnAwhYD1w';
-        const { createClient } = supabase;
-        const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let userCountry = "Detectando..."; 
         let language = "es";
         let modeLogin = true;
+
+        async function initSupabase() {
+            if (window.supabase) {
+                _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                setupAuthListener();
+            } else {
+                setTimeout(initSupabase, 100);
+            }
+        }
 
         async function fetchGeo() {
             try {
@@ -159,6 +172,7 @@
         }
 
         fetchGeo();
+        initSupabase();
 
         async function sendAlert(prod, cant, user, location) {
             const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
@@ -197,14 +211,16 @@
             }
         });
 
-        _supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session) {
-                document.getElementById('authSection').style.display = 'none';
-                document.getElementById('mainPanel').style.display = 'block';
-                if(userCountry === "Detectando...") await fetchGeo();
-                renderPedidos();
-            }
-        });
+        function setupAuthListener() {
+            _supabase.auth.onAuthStateChange(async (event, session) => {
+                if (session) {
+                    document.getElementById('authSection').style.display = 'none';
+                    document.getElementById('mainPanel').style.display = 'block';
+                    if(userCountry === "Detectando...") await fetchGeo();
+                    renderPedidos();
+                }
+            });
+        }
 
         async function renderPedidos() {
             const { data } = await _supabase.from('pedidos').select('*').order('id', { ascending: false });
