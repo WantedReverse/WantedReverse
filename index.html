@@ -58,11 +58,12 @@
         h1 { font-size: 1.6rem; font-weight: 900; margin-bottom: 10px; }
         h1 span { color: var(--amarillo); }
 
-        input { width: 100%; padding: 16px; margin-bottom: 15px; background: #000; border: 1px solid #333; border-radius: 12px; color: #fff; box-sizing: border-box; font-size: 1rem; }
+        input, select { width: 100%; padding: 16px; margin-bottom: 15px; background: #000; border: 1px solid #333; border-radius: 12px; color: #fff; box-sizing: border-box; font-size: 1rem; appearance: none; }
         .btn-main { width: 100%; padding: 18px; background: var(--amarillo); color: #000; border: none; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
         .pedido-item { background: var(--negro-card); border: 1px solid #222; padding: 20px; border-radius: 20px; margin-bottom: 15px; text-align: left; }
         .prod-name { font-size: 1.2rem; font-weight: 900; color: var(--amarillo); text-transform: uppercase; }
+        .tag-categoria { display: inline-block; background: #333; color: var(--amarillo); font-size: 0.6rem; padding: 4px 8px; border-radius: 5px; margin-bottom: 5px; font-weight: bold; }
 
         .payment-group { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
         .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
@@ -114,6 +115,13 @@
             <div class="card">
                 <h2 id="txt-publish" style="font-size: 1.1rem; line-height: 1.4;">Publica lo que buscas y nuestra <span>red global de vendedores</span> competirá por ofrecerte el mejor precio.</h2>
                 <form id="orderForm">
+                    <select id="cat_id" required>
+                        <option value="" disabled selected>Selecciona Categoría</option>
+                        <option value="1">Repuestos Automotrices</option>
+                        <option value="2">Celulares</option>
+                        <option value="3">Computación</option>
+                        <option value="4">Hogar</option>
+                    </select>
                     <input type="text" id="prod" placeholder="Ej: iPhone 15 Pro Max" required>
                     <input type="number" id="cant" placeholder="Cantidad" required>
                     <button type="submit" class="btn-main" id="btn-launch">LANZAR PEDIDO</button>
@@ -143,7 +151,6 @@
     </div>
 
     <script>
-        // La carga de Supabase se maneja mediante el atributo 'defer' en el head para mejor SEO
         let _supabase;
         
         const SUPABASE_URL = 'https://gtngqwnbyjqqmuzsztnv.supabase.co';
@@ -224,7 +231,8 @@
         }
 
         async function renderPedidos() {
-            const { data } = await _supabase.from('pedidos').select('*').order('id', { ascending: false });
+            // Unimos con la tabla categorias para mostrar el nombre
+            const { data } = await _supabase.from('pedidos').select('*, categorias(nombre)').order('id', { ascending: false });
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
             
@@ -234,8 +242,9 @@
                 const card = document.createElement('div');
                 card.className = 'pedido-item';
                 card.innerHTML = `
-                    <span class="prod-name">${p.producto}</span>
-                    <p style="font-size:0.8rem; color:#888;">Cantidad: ${p.cantidad} | Ubicación: ${p.ubicacion || 'Global'}</p>
+                    <div class="tag-categoria">${p.categorias ? p.categorias.nombre : 'General'}</div>
+                    <div class="prod-name">${p.producto}</div>
+                    <p style="font-size:0.8rem; color:#888; margin-top:5px;">Cantidad: ${p.cantidad} | Ubicación: ${p.ubicacion || 'Global'}</p>
                     <div class="payment-group">
                         <button class="btn-offer btn-paypal" onclick="window.location.href='https://paypal.me/wantedsolutions/3.73'">
                             ${btnText} (PAYPAL) <span>3.73 USD</span>
@@ -253,18 +262,22 @@
             const { data: { user } } = await _supabase.auth.getUser();
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
+            const catId = document.getElementById('cat_id').value;
             
             const { error } = await _supabase.from('pedidos').insert([{ 
                 nombre: user.email, 
                 producto: prod, 
                 cantidad: parseInt(cant),
-                ubicacion: userCountry 
+                ubicacion: userCountry,
+                categoria_id: parseInt(catId)
             }]);
             
             if (!error) { 
                 sendAlert(prod, cant, user.email, userCountry);
                 renderPedidos(); 
                 document.getElementById('orderForm').reset();
+            } else {
+                alert("Error al lanzar pedido: " + error.message);
             }
         });
 
