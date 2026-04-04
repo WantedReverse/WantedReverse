@@ -84,8 +84,8 @@
             <div class="logo-icon">W</div> WANTED
         </div>
         <select class="lang-switch" id="langSelector" onchange="changeLanguage()">
-            <option value="es">ESPAÑOL</option>
-            <option value="en">ENGLISH</option>
+            <option value="es">ESP</option>
+            <option value="en">ENG</option>
         </select>
     </header>
 
@@ -117,10 +117,36 @@
                 <form id="orderForm">
                     <select id="cat_id" required>
                         <option value="" disabled selected>Selecciona Categoría</option>
-                        <option value="1">Repuestos Automotrices</option>
-                        <option value="2">Celulares</option>
-                        <option value="3">Computación</option>
-                        <option value="4">Hogar</option>
+                        <option value="1">Accesorios para Vehículos</option>
+                        <option value="2">Agro</option>
+                        <option value="3">Alimentos y Bebidas</option>
+                        <option value="4">Animales y Mascotas</option>
+                        <option value="5">Antigüedades y Colecciones</option>
+                        <option value="6">Arte, Librería y Mercería</option>
+                        <option value="7">Audio</option>
+                        <option value="8">Bebés</option>
+                        <option value="9">Belleza y Cuidado Personal</option>
+                        <option value="10">Cámaras y Accesorios</option>
+                        <option value="11">Celulares y Teléfonos</option>
+                        <option value="12">Computación</option>
+                        <option value="13">Consolas y Videojuegos</option>
+                        <option value="14">Construcción</option>
+                        <option value="15">Deportes y Fitness</option>
+                        <option value="16">Electrodomésticos y Aires Ac.</option>
+                        <option value="17">Electrónica, Audio y Video</option>
+                        <option value="18">Herramientas</option>
+                        <option value="19">Hogar, Muebles y Jardín</option>
+                        <option value="20">Industrias y Oficinas</option>
+                        <option value="21">Inmuebles</option>
+                        <option value="22">Instrumentos Musicales</option>
+                        <option value="23">Joyas y Relojes</option>
+                        <option value="24">Juegos y Juguetes</option>
+                        <option value="25">Libros, Revistas y Comics</option>
+                        <option value="26">Música, Películas y Series</option>
+                        <option value="27">Ropa y Accesorios</option>
+                        <option value="28">Salud y Equipamiento Médico</option>
+                        <option value="29">Software</option>
+                        <option value="30">Otros</option>
                     </select>
                     <input type="text" id="prod" placeholder="Ej: iPhone 15 Pro Max" required>
                     <input type="number" id="cant" placeholder="Cantidad" required>
@@ -231,12 +257,11 @@
         }
 
         async function renderPedidos() {
-            // Unimos con la tabla categorias para mostrar el nombre
             const { data } = await _supabase.from('pedidos').select('*, categorias(nombre)').order('id', { ascending: false });
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
             
-            const btnText = (language === "es") ? "OFERTAR POR" : "BID FOR";
+            const btnText = (language === "es" || language === "ESP") ? "OFERTAR POR" : "BID FOR";
 
             data.forEach(p => {
                 const card = document.createElement('div');
@@ -284,4 +309,4 @@
         function signOut() { _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
-    </html>
+                </html>
