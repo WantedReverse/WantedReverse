@@ -103,11 +103,19 @@
         <div id="authSection" class="card">
             <h1 id="txt-h1">CONEXIÓN DE <span>VENTAS GLOBAL</span></h1>
             <p id="txt-sub" style="font-size: 0.8rem; color: var(--gris-texto); margin-bottom: 20px;">La plataforma donde los compradores publican y los vendedores compiten.</p>
+            
             <form id="authForm">
                 <input type="email" id="email" placeholder="Email" required>
                 <input type="password" id="pass" placeholder="Password" required minlength="6">
                 <button type="submit" class="btn-main" id="btn-auth">ACCEDER AL SISTEMA</button>
             </form>
+
+            <div id="otpSection" style="display: none; margin-top: 20px;">
+                <p style="font-size: 0.8rem; color: var(--amarillo); margin-bottom: 10px;">Ingresa el código de 6 dígitos enviado a tu email:</p>
+                <input type="text" id="otpCode" placeholder="Código de 6 dígitos" maxlength="6">
+                <button onclick="verifyOTP()" class="btn-main">VERIFICAR CÓDIGO</button>
+            </div>
+
             <p class="legal-link" onclick="toggleMode()" id="switchBtn">¿Nuevo usuario? Crear cuenta</p>
         </div>
 
@@ -215,6 +223,8 @@
             modeLogin = !modeLogin;
             document.getElementById('txt-h1').innerHTML = modeLogin ? 'CONEXIÓN DE <span>VENTAS GLOBAL</span>' : 'REGISTRO DE <span>IDENTIDAD REAL</span>';
             document.getElementById('btn-auth').innerText = modeLogin ? 'ACCEDER AL SISTEMA' : 'REGISTRARME';
+            document.getElementById('otpSection').style.display = 'none';
+            document.getElementById('authForm').style.display = 'block';
         }
 
         function toggleLegal() {
@@ -237,9 +247,20 @@
             } else {
                 const { error } = await _supabase.auth.signUp({ email, password });
                 if (error) alert(error.message);
-                else alert("Registro exitoso.");
+                else {
+                    alert("Registro enviado. Por favor revisa tu correo.");
+                    document.getElementById('authForm').style.display = 'none';
+                    document.getElementById('otpSection').style.display = 'block';
+                }
             }
         });
+
+        async function verifyOTP() {
+            const email = document.getElementById('email').value;
+            const token = document.getElementById('otpCode').value;
+            const { error } = await _supabase.auth.verifyOtp({ email, token, type: 'signup' });
+            if (error) alert("Error: " + error.message);
+        }
 
         function setupAuthListener() {
             _supabase.auth.onAuthStateChange(async (event, session) => {
