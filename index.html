@@ -44,18 +44,7 @@
         .brand { display: flex; align-items: center; gap: 12px; font-size: 1.5rem; font-weight: 900; color: var(--amarillo); letter-spacing: -1px; cursor: pointer; }
         .logo-icon { width: 45px; height: 35px; background: var(--amarillo); color: #000; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 1.2rem; font-weight: 900; }
         
-        .lang-switch { 
-            font-size: 0.7rem; 
-            background: #222; 
-            border: 1px solid #444; 
-            color: #fff; 
-            padding: 5px 8px; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            width: auto; 
-            min-width: 55px; 
-            text-align: center;
-        }
+        .lang-switch { font-size: 0.7rem; background: #222; border: 1px solid #444; color: #fff; padding: 5px 8px; border-radius: 5px; cursor: pointer; width: auto; min-width: 55px; text-align: center; }
 
         .container { width: 95%; max-width: 450px; margin-top: 20px; }
 
@@ -172,7 +161,7 @@
                 <div class="faq-question">¿Por qué pagar $3,73 USD?</div>
                 <div class="faq-answer">Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos, evitando spam y estafas en el marketplace.</div>
                 <div class="faq-question">¿Qué recibo al pagar?</div>
-                <div class="faq-answer">Obtienes acceso directo al contacto (Email/WhatsApp) del comprador para cerrar la venta de repuestos o tecnología sin intermediarios.</div>
+                <div class="faq-answer">Acceso directo al contacto del comprador para cerrar la venta sin intermediarios. La entrega y el método de envío corren por cuenta exclusiva de las partes. **WantedReverse** solo acerca la oferta y la demanda.</div>
             </div>
             
             <p class="legal-link" onclick="toggleLegal()">Ver Términos y Protección Legal</p>
@@ -181,6 +170,7 @@
                 1. <strong>Naturaleza:</strong> WantedReverse facilita la conexión entre demanda y oferta.<br>
                 2. <strong>Tasa de Conexión:</strong> El pago desbloquea la identidad del comprador interesado.<br>
                 3. <strong>No Reembolso:</strong> Por la naturaleza del servicio digital inmediato, no se realizan devoluciones tras el pago.<br>
+                4. <strong>Logística y Entrega:</strong> Los usuarios son responsables de acordar y concretar la entrega de los productos. La plataforma no interviene en el envío ni en la verificación física de los mismos.
             </div>
 
             <p onclick="signOut()" style="color:red; font-size:0.7rem; cursor:pointer; text-align:center; margin-top:40px; opacity:0.5;">CERRAR SESIÓN SEGURA</p>
@@ -189,7 +179,6 @@
 
     <script>
         let _supabase;
-        
         const SUPABASE_URL = 'https://gtngqwnbyjqqmuzsztnv.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0bmdxd25ieWpxcW11enN6dG52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjgyMzksImV4cCI6MjA4ODk0NDIzOX0.vSxxHrayzEJG_HwRXcyOCb5vZuDZksrQe6GnAwhYD1w';
 
@@ -201,9 +190,7 @@
             if (window.supabase) {
                 _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                 setupAuthListener();
-            } else {
-                setTimeout(initSupabase, 100);
-            }
+            } else { setTimeout(initSupabase, 100); }
         }
 
         async function fetchGeo() {
@@ -211,9 +198,7 @@
                 const response = await fetch('https://ipapi.co/json/');
                 const data = await response.json();
                 userCountry = data.country_name || "Global";
-            } catch (error) {
-                userCountry = "Global";
-            }
+            } catch (error) { userCountry = "Global"; }
         }
 
         fetchGeo();
@@ -271,9 +256,7 @@
             const { data } = await _supabase.from('pedidos').select('*, categorias(nombre)').order('id', { ascending: false });
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
-            
             const btnText = (language === "es" || language === "ESP") ? "OFERTAR POR" : "BID FOR";
-
             data.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'pedido-item';
@@ -294,30 +277,21 @@
         document.getElementById('orderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if(userCountry === "Detectando...") await fetchGeo();
-
             const { data: { user } } = await _supabase.auth.getUser();
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
             const catId = document.getElementById('cat_id').value;
-            
             const { error } = await _supabase.from('pedidos').insert([{ 
-                nombre: user.email, 
-                producto: prod, 
-                cantidad: parseInt(cant),
-                ubicacion: userCountry,
-                categoria_id: parseInt(catId)
+                nombre: user.email, producto: prod, cantidad: parseInt(cant), ubicacion: userCountry, categoria_id: parseInt(catId)
             }]);
-            
             if (!error) { 
                 sendAlert(prod, cant, user.email, userCountry);
                 renderPedidos(); 
                 document.getElementById('orderForm').reset();
-            } else {
-                alert("Error al lanzar pedido: " + error.message);
-            }
+            } else { alert("Error: " + error.message); }
         });
 
         function signOut() { _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
-                            </html>
+    </html>
