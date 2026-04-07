@@ -5,8 +5,8 @@
     <meta name="google-site-verification" content="ho9H6YsPv9vHZq5_ngvcn0N7uOGzCVrF1pfXpv-T0ag" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>WANTED | Compras y Ventas - Subasta Inversa Global</title>
-    <meta name="description" content="La plataforma global donde los compradores publican qué buscan y los vendedores compiten por ofrecer el precio más bajo. Comercio inteligente y seguro.">
+    <title>WantedReverse | Compras y Ventas - Subasta Inversa Global</title>
+    <meta name="description" content="WantedReverse: La plataforma global donde los compradores publican qué buscan y los vendedores compiten por ofrecer el precio más bajo.">
     <meta name="keywords" content="compras, ventas, subasta inversa, marketplace global, ofertas, teléfonos inteligentes, repuestos, playstation, relojes inteligentes">
     
     <link rel="canonical" href="https://wantedsolutions.github.io/wanted/" />
@@ -15,7 +15,7 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "WANTED",
+      "name": "WantedReverse",
       "url": "https://wantedsolutions.github.io/wanted",
       "logo": "https://wantedsolutions.github.io/wanted/logo.png",
       "description": "Plataforma de subasta inversa para compras y ventas globales de tecnología y repuestos."
@@ -42,9 +42,8 @@
         header { width: 100%; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; background: rgba(0,0,0,0.95); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; }
         
         .brand { display: flex; align-items: center; gap: 12px; font-size: 1.5rem; font-weight: 900; color: var(--amarillo); letter-spacing: -1px; cursor: pointer; }
-        .logo-icon { width: 35px; height: 35px; background: var(--amarillo); color: #000; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 1.4rem; font-weight: 900; }
+        .logo-icon { width: 45px; height: 35px; background: var(--amarillo); color: #000; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 1.2rem; font-weight: 900; }
         
-        /* Modificación para el selector pequeño y a la derecha */
         .lang-switch { 
             font-size: 0.7rem; 
             background: #222; 
@@ -93,7 +92,7 @@
 
     <header>
         <div class="brand" onclick="location.reload()">
-            <div class="logo-icon">W</div> WANTED
+            <div class="logo-icon">WR</div> WantedReverse
         </div>
         <select class="lang-switch" id="langSelector" onchange="changeLanguage()">
             <option value="es">ESP</option>
@@ -178,8 +177,8 @@
             
             <p class="legal-link" onclick="toggleLegal()">Ver Términos y Protección Legal</p>
             <div id="legalModal">
-                <strong>TÉRMINOS Y CONDICIONES (WANTED)</strong><br><br>
-                1. <strong>Naturaleza:</strong> WANTED facilita la conexión entre demanda y oferta.<br>
+                <strong>TÉRMINOS Y CONDICIONES (WantedReverse)</strong><br><br>
+                1. <strong>Naturaleza:</strong> WantedReverse facilita la conexión entre demanda y oferta.<br>
                 2. <strong>Tasa de Conexión:</strong> El pago desbloquea la identidad del comprador interesado.<br>
                 3. <strong>No Reembolso:</strong> Por la naturaleza del servicio digital inmediato, no se realizan devoluciones tras el pago.<br>
             </div>
@@ -223,7 +222,7 @@
         async function sendAlert(prod, cant, user, location) {
             const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
             const chatId = '7660494923'; 
-            const msg = `🚨 WANTED: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}\n📍 País: ${location}`;
+            const msg = `🚨 WANTED REVERSE: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}\n📍 País: ${location}`;
             fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
         }
 
@@ -321,4 +320,4 @@
         function signOut() { _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
-    </html>
+                            </html>
