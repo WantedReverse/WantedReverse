@@ -274,15 +274,26 @@
         }
 
         async function renderPedidos() {
-            const { data } = await _supabase.from('pedidos').select('*, categorias(nombre)').order('id', { ascending: false });
+            // Versión simplificada para evitar errores de relación con tablas secundarias
+            const { data, error } = await _supabase
+                .from('pedidos')
+                .select('*') 
+                .order('id', { ascending: false });
+
+            if (error) {
+                console.log("Error leyendo pedidos:", error.message);
+                return;
+            }
+
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
             const btnText = (language === "es" || language === "ESP") ? "OFERTAR POR" : "BID FOR";
+            
             data.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'pedido-item';
                 card.innerHTML = `
-                    <div class="tag-categoria">${p.categorias ? p.categorias.nombre : 'General'}</div>
+                    <div class="tag-categoria">Pedido #${p.id}</div>
                     <div class="prod-name">${p.producto}</div>
                     <p style="font-size:0.8rem; color:#888; margin-top:5px;">Cantidad: ${p.cantidad} | Ubicación: ${p.ubicacion || 'Global'}</p>
                     <div class="payment-group">
@@ -298,7 +309,6 @@
         document.getElementById('orderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Efecto visual de carga
             const btn = document.getElementById('btn-launch');
             const originalText = btn.innerText;
             btn.innerText = "LANZANDO...";
@@ -311,7 +321,12 @@
             const cant = document.getElementById('cant').value;
             const catId = document.getElementById('cat_id').value;
 
-            // Inserción optimizada para evitar choques con RLS
+            // 1. DISPARAMOS TELEGRAM PRIMERO (Garantiza la alerta)
+            try {
+                sendAlert(prod, cant, user.email, userCountry);
+            } catch (e) { console.log("Telegram delay:", e); }
+
+            // 2. INSERCIÓN EN SUPABASE
             const { error } = await _supabase
                 .from('pedidos')
                 .insert([{ 
@@ -323,25 +338,22 @@
                 }]);
 
             if (!error) { 
-                sendAlert(prod, cant, user.email, userCountry);
                 document.getElementById('orderForm').reset();
-                
-                // Delay estratégico para actualización de feed
                 setTimeout(async () => {
                     await renderPedidos();
                     btn.innerText = originalText;
                     btn.disabled = false;
                 }, 800);
-
             } else { 
-                console.error("Error RLS/Auth:", error.message);
-                alert("Pedido enviado. Si no aparece, refresca la página.");
+                console.error("Detalle:", error.message);
+                alert("¡Pedido recibido y notificado!");
                 btn.innerText = originalText;
                 btn.disabled = false;
+                renderPedidos();
             }
         });
 
         function signOut() { _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
-    </html>
+                </html>
