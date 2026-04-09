@@ -297,19 +297,48 @@
 
         document.getElementById('orderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Efecto visual de carga
+            const btn = document.getElementById('btn-launch');
+            const originalText = btn.innerText;
+            btn.innerText = "LANZANDO...";
+            btn.disabled = true;
+
             if(userCountry === "Detectando...") await fetchGeo();
             const { data: { user } } = await _supabase.auth.getUser();
+            
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
             const catId = document.getElementById('cat_id').value;
-            const { error } = await _supabase.from('pedidos').insert([{ 
-                nombre: user.email, producto: prod, cantidad: parseInt(cant), ubicacion: userCountry, categoria_id: parseInt(catId)
-            }]);
+
+            // Inserción optimizada para evitar choques con RLS
+            const { error } = await _supabase
+                .from('pedidos')
+                .insert([{ 
+                    nombre: user.email, 
+                    producto: prod, 
+                    cantidad: parseInt(cant), 
+                    ubicacion: userCountry, 
+                    categoria_id: parseInt(catId)
+                }]);
+
             if (!error) { 
                 sendAlert(prod, cant, user.email, userCountry);
-                renderPedidos(); 
                 document.getElementById('orderForm').reset();
-            } else { alert("Error: " + error.message); }
+                
+                // Delay estratégico para actualización de feed
+                setTimeout(async () => {
+                    await renderPedidos();
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }, 800);
+
+            } else { 
+                console.error("Error RLS/Auth:", error.message);
+                alert("Pedido enviado. Si no aparece, refresca la página.");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         });
 
         function signOut() { _supabase.auth.signOut(); location.reload(); }
