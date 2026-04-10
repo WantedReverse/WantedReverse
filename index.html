@@ -216,7 +216,7 @@
             const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
             const chatId = '7660494923'; 
             const msg = `🚨 WANTED REVERSE: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}\n📍 País: ${location}`;
-            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`, {mode: 'no-cors'});
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`, {mode: 'no-cors', keepalive: true});
         }
 
         function toggleMode() {
@@ -270,9 +270,8 @@
                     await fetchGeo();
                     renderPedidos();
                     
-                    // Tiempo Real: Escuchar cambios en la tabla
-                    _supabase.channel('custom-all-channel')
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, () => {
+                    _supabase.channel('pedidos-update')
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pedidos' }, () => {
                         renderPedidos();
                     })
                     .subscribe();
@@ -284,7 +283,8 @@
             const { data, error } = await _supabase
                 .from('pedidos')
                 .select('*') 
-                .order('id', { ascending: false });
+                .order('id', { ascending: false })
+                .limit(20);
 
             if (error) return;
 
@@ -320,10 +320,8 @@
             const cant = document.getElementById('cant').value;
             const catId = document.getElementById('cat_id').value;
 
-            // 1. Notificación Telegram
             sendAlert(prod, cant, user.email, userCountry);
 
-            // 2. Insertar Pedido
             const { error } = await _supabase.from('pedidos').insert([{ 
                 nombre: user.email, 
                 producto: prod, 
@@ -333,11 +331,10 @@
             }]);
 
             if (error) {
-                console.error(error.message);
-                alert("Error al enviar el pedido. Revisa tu conexión.");
+                alert("Error de conexión con la lista. Verifica permisos en Supabase.");
             } else {
                 document.getElementById('orderForm').reset();
-                renderPedidos();
+                setTimeout(renderPedidos, 500); 
             }
             btn.innerText = "LANZAR PEDIDO";
             btn.disabled = false;
