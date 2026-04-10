@@ -279,10 +279,11 @@
             });
         }
 
+        // FUNCIÓN MODIFICADA PARA PROTECCIÓN DE DATOS
         async function renderPedidos() {
             const { data, error } = await _supabase
                 .from('pedidos')
-                .select('*') 
+                .select('id, producto, cantidad, ubicacion') // Filtramos columnas para no traer el email ('nombre')
                 .order('id', { ascending: false })
                 .limit(20);
 
@@ -343,4 +344,4 @@
         function signOut() { _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
-    </html>
+                            </html>
