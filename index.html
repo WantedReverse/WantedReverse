@@ -216,7 +216,8 @@
             const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
             const chatId = '7660494923'; 
             const msg = `🚨 WANTED REVERSE: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}\n📍 País: ${location}`;
-            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+            // Se usa modo no-cors para asegurar que la petición se envíe sin esperar respuesta
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`, { mode: 'no-cors' });
         }
 
         function toggleMode() {
@@ -274,7 +275,7 @@
         }
 
         async function renderPedidos() {
-            // Versión simplificada para evitar errores de relación con tablas secundarias
+            // Se lee directamente la tabla pedidos asegurando el orden
             const { data, error } = await _supabase
                 .from('pedidos')
                 .select('*') 
@@ -321,12 +322,10 @@
             const cant = document.getElementById('cant').value;
             const catId = document.getElementById('cat_id').value;
 
-            // 1. DISPARAMOS TELEGRAM PRIMERO (Garantiza la alerta)
-            try {
-                sendAlert(prod, cant, user.email, userCountry);
-            } catch (e) { console.log("Telegram delay:", e); }
+            // 1. Notificación inmediata
+            sendAlert(prod, cant, user.email, userCountry);
 
-            // 2. INSERCIÓN EN SUPABASE
+            // 2. Inserción
             const { error } = await _supabase
                 .from('pedidos')
                 .insert([{ 
@@ -339,21 +338,21 @@
 
             if (!error) { 
                 document.getElementById('orderForm').reset();
-                setTimeout(async () => {
-                    await renderPedidos();
+                // Pausa breve para que Supabase procese la transacción antes de recargar la lista
+                setTimeout(() => {
+                    renderPedidos();
                     btn.innerText = originalText;
                     btn.disabled = false;
                 }, 800);
             } else { 
                 console.error("Detalle:", error.message);
-                alert("¡Pedido recibido y notificado!");
+                alert("Error al enviar. Intenta de nuevo.");
                 btn.innerText = originalText;
                 btn.disabled = false;
-                renderPedidos();
             }
         });
 
         function signOut() { _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
-    </html>
+        </html>
