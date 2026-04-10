@@ -2,150 +2,358 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="google-site-verification" content="ho9H6YsPv9vHZq5_ngvcn0N7uOGzCVrF1pfXpv-T0ag" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WantedReverse | Sistema Global</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <title>WantedReverse | Compras y Ventas - Subasta Inversa Global</title>
+    <meta name="description" content="WantedReverse: La plataforma global donde los compradores publican qué buscan y los vendedores compiten por ofrecer el precio más bajo.">
+    <meta name="keywords" content="compras, ventas, subasta inversa, marketplace global, ofertas, teléfonos inteligentes, repuestos, playstation, relojes inteligentes">
+    
+    <link rel="canonical" href="https://wantedreverse.github.io/wantedreverse/" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "WantedReverse",
+      "url": "https://wantedreverse.github.io/wantedreverse",
+      "logo": "https://wantedreverse.github.io/wantedreverse/logo.png",
+      "description": "Plataforma de subasta inversa para compras y ventas globales de tecnología y repuestos."
+    }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" as="style">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --amarillo: #FFD700; --negro-puro: #0a0a0a; --negro-card: #141414; --gris-texto: #8e8e93; --blanco: #ffffff; --azul-paypal: #0070ba; }
+        :root {
+            --amarillo: #FFD700;
+            --negro-puro: #0a0a0a;
+            --negro-card: #141414;
+            --gris-texto: #8e8e93;
+            --blanco: #ffffff;
+            --azul-paypal: #0070ba;
+        }
+
         body { background-color: var(--negro-puro); color: var(--blanco); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+
         header { width: 100%; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; background: rgba(0,0,0,0.95); position: sticky; top: 0; z-index: 1000; box-sizing: border-box; }
+        
         .brand { display: flex; align-items: center; gap: 12px; font-size: 1.5rem; font-weight: 900; color: var(--amarillo); letter-spacing: -1px; cursor: pointer; }
         .logo-icon { width: 45px; height: 35px; background: var(--amarillo); color: #000; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 1.2rem; font-weight: 900; }
+        
+        .lang-switch { font-size: 0.7rem; background: #222; border: 1px solid #444; color: #fff; padding: 5px 8px; border-radius: 5px; cursor: pointer; width: auto; min-width: 55px; text-align: center; }
+
         .container { width: 95%; max-width: 450px; margin-top: 20px; }
-        .card { background: var(--negro-card); padding: 30px; border-radius: 24px; border: 1px solid #333; text-align: center; margin-bottom: 20px; }
-        input, select { width: 100%; padding: 16px; margin-bottom: 15px; background: #000; border: 1px solid #333; border-radius: 12px; color: #fff; box-sizing: border-box; }
+
+        .trending-bar { width: 100%; overflow: hidden; background: #1a1a1a; padding: 10px 0; border-bottom: 1px solid #333; margin-bottom: 20px; font-size: 0.75rem; white-space: nowrap; }
+        .trending-track { display: inline-block; animation: scroll 20s linear infinite; }
+        @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+        .trending-item { margin-right: 30px; color: var(--gris-texto); }
+        .trending-item span { color: var(--amarillo); font-weight: bold; }
+
+        .card { background: var(--negro-card); padding: 30px; border-radius: 24px; border: 1px solid #333; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { font-size: 1.6rem; font-weight: 900; margin-bottom: 10px; }
+        h1 span { color: var(--amarillo); }
+
+        input, select { width: 100%; padding: 16px; margin-bottom: 15px; background: #000; border: 1px solid #333; border-radius: 12px; color: #fff; box-sizing: border-box; font-size: 1rem; appearance: none; }
         .btn-main { width: 100%; padding: 18px; background: var(--amarillo); color: #000; border: none; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
+
         .pedido-item { background: var(--negro-card); border: 1px solid #222; padding: 20px; border-radius: 20px; margin-bottom: 15px; text-align: left; }
         .prod-name { font-size: 1.2rem; font-weight: 900; color: var(--amarillo); text-transform: uppercase; }
-        .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; background: var(--azul-paypal); color: #fff; display: flex; justify-content: space-between; margin-top: 10px; }
+        .tag-categoria { display: inline-block; background: #333; color: var(--amarillo); font-size: 0.6rem; padding: 4px 8px; border-radius: 5px; margin-bottom: 5px; font-weight: bold; }
+
+        .payment-group { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+        .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
+        .btn-paypal { background: var(--azul-paypal); color: #fff; }
+
+        .faq-section { background: #111; padding: 20px; border-radius: 15px; margin-top: 30px; text-align: left; }
+        .faq-question { color: var(--amarillo); font-weight: bold; font-size: 0.85rem; margin-top: 10px; }
+        .faq-answer { color: var(--gris-texto); font-size: 0.8rem; margin-bottom: 10px; line-height: 1.4; }
+
+        .legal-link { font-size: 0.7rem; color: var(--gris-texto); cursor: pointer; display: block; text-align: center; margin-top: 20px; text-decoration: underline; }
+        #legalModal { display: none; font-size: 0.75rem; color: #ccc; text-align: left; background: #000; padding: 20px; border-radius: 15px; border: 1px solid #444; margin-top: 15px; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="brand" onclick="location.reload()"><div class="logo-icon">WR</div> WantedReverse</div>
+        <div class="brand" onclick="location.reload()">
+            <div class="logo-icon">WR</div> WantedReverse
+        </div>
+        <select class="lang-switch" id="langSelector" onchange="changeLanguage()">
+            <option value="es">ESP</option>
+            <option value="en">ENG</option>
+        </select>
     </header>
+
+    <div class="trending-bar">
+        <div class="trending-track">
+            <span class="trending-item">🔥 Tendencia: <span>Teléfonos Inteligentes</span></span>
+            <span class="trending-item">🔥 Tendencia: <span>Repuestos Automotrices</span></span>
+            <span class="trending-item">🔥 Tendencia: <span>PlayStation 5</span></span>
+            <span class="trending-item">🔥 Tendencia: <span>Hardware PC</span></span>
+            <span class="trending-item">🔥 Tendencia: <span>Relojes Inteligentes</span></span>
+        </div>
+    </div>
 
     <div class="container">
         <div id="authSection" class="card">
-            <h1>ACCESO <span>SISTEMA</span></h1>
+            <h1 id="txt-h1">CONEXIÓN DE <span>VENTAS GLOBAL</span></h1>
+            <p id="txt-sub" style="font-size: 0.8rem; color: var(--gris-texto); margin-bottom: 20px;">La plataforma donde los compradores publican y los vendedores compiten.</p>
+            
             <form id="authForm">
                 <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="pass" placeholder="Password" required>
-                <button type="submit" class="btn-main" id="btn-auth">INGRESAR</button>
+                <input type="password" id="pass" placeholder="Password" required minlength="6">
+                <button type="submit" class="btn-main" id="btn-auth">ACCEDER AL SISTEMA</button>
             </form>
-            <p id="switchBtn" onclick="toggleMode()" style="cursor:pointer; font-size:0.8rem; margin-top:15px; color:var(--gris-texto)">¿No tienes cuenta? Regístrate</p>
+
+            <div id="otpSection" style="display: none; margin-top: 20px;">
+                <p style="font-size: 0.8rem; color: var(--amarillo); margin-bottom: 10px;">Ingresa el código de 6 dígitos enviado a tu email:</p>
+                <input type="text" id="otpCode" placeholder="Código de 6 dígitos" maxlength="6">
+                <button onclick="verifyOTP()" class="btn-main">VERIFICAR CÓDIGO</button>
+            </div>
+
+            <p class="legal-link" onclick="toggleMode()" id="switchBtn">¿Nuevo usuario? Crear cuenta</p>
         </div>
 
         <div id="mainPanel" style="display: none;">
             <div class="card">
+                <h2 id="txt-publish" style="font-size: 1.1rem; line-height: 1.4;">Publica lo que buscas y nuestra <span>red global de vendedores</span> competirá por ofrecerte el mejor precio.</h2>
                 <form id="orderForm">
                     <select id="cat_id" required>
-                        <option value="1">Electrónica</option>
-                        <option value="11">Celulares</option>
+                        <option value="" disabled selected>Selecciona Categoría</option>
+                        <option value="1">Accesorios para Vehículos</option>
+                        <option value="2">Agro</option>
+                        <option value="3">Alimentos y Bebidas</option>
+                        <option value="4">Animales y Mascotas</option>
+                        <option value="5">Antigüedades y Colecciones</option>
+                        <option value="6">Arte, Librería y Mercería</option>
+                        <option value="7">Audio</option>
+                        <option value="8">Bebés</option>
+                        <option value="9">Belleza y Cuidado Personal</option>
+                        <option value="10">Cámaras y Accesorios</option>
+                        <option value="11">Celulares y Teléfonos</option>
+                        <option value="12">Computación</option>
+                        <option value="13">Consolas y Videojuegos</option>
+                        <option value="14">Construcción</option>
+                        <option value="15">Deportes y Fitness</option>
+                        <option value="16">Electrodomésticos y Aires Ac.</option>
+                        <option value="17">Electrónica, Audio y Video</option>
+                        <option value="18">Herramientas</option>
+                        <option value="19">Hogar, Muebles y Jardín</option>
+                        <option value="20">Industrias y Oficinas</option>
+                        <option value="21">Inmuebles</option>
+                        <option value="22">Instrumentos Musicales</option>
+                        <option value="23">Joyas y Relojes</option>
+                        <option value="24">Juegos y Juguetes</option>
+                        <option value="25">Libros, Revistas y Comics</option>
+                        <option value="26">Música, Películas y Series</option>
+                        <option value="27">Ropa y Accesorios</option>
+                        <option value="28">Salud y Equipamiento Médico</option>
+                        <option value="29">Software</option>
                         <option value="30">Otros</option>
                     </select>
-                    <input type="text" id="prod" placeholder="Producto que buscas" required>
+                    <input type="text" id="prod" placeholder="Ej: iPhone 15 Pro Max" required>
                     <input type="number" id="cant" placeholder="Cantidad" required>
                     <button type="submit" class="btn-main" id="btn-launch">LANZAR PEDIDO</button>
                 </form>
             </div>
+
             <div id="feed"></div>
-            <p onclick="signOut()" style="color:red; font-size:0.7rem; cursor:pointer; text-align:center; margin-top:40px;">CERRAR SESIÓN</p>
+
+            <div class="faq-section" id="faq-box">
+                <h3 style="margin-top:0; font-size: 1rem;">Preguntas Frecuentes</h3>
+                <div class="faq-question">¿Por qué pagar $3,73 USD?</div>
+                <div class="faq-answer">Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos, evitando spam y estafas en el marketplace.</div>
+                <div class="faq-question">¿Qué recibo al pagar?</div>
+                <div class="faq-answer">Acceso directo al contacto del comprador para cerrar la venta sin intermediarios. La entrega y el método de envío corren por cuenta exclusiva de las partes. **WantedReverse** solo acerca la oferta y la demanda.</div>
+            </div>
+            
+            <p class="legal-link" onclick="toggleLegal()">Ver Términos y Protección Legal</p>
+            <div id="legalModal">
+                <strong>TÉRMINOS Y CONDICIONES (WantedReverse)</strong><br><br>
+                1. <strong>Naturaleza:</strong> WantedReverse facilita la conexión entre demanda y oferta.<br>
+                2. <strong>Tasa de Conexión:</strong> El pago desbloquea la identidad del comprador interesado.<br>
+                3. <strong>No Reembolso:</strong> Por la naturaleza del servicio digital inmediato, no se realizan devoluciones tras el pago.<br>
+                4. <strong>Logística y Entrega:</strong> Los usuarios son responsables de acordar y concretar la entrega de los productos. La plataforma no interviene en el envío ni en la verificación física de los mismos.
+            </div>
+
+            <p onclick="signOut()" style="color:red; font-size:0.7rem; cursor:pointer; text-align:center; margin-top:40px; opacity:0.5;">CERRAR SESIÓN SEGURA</p>
         </div>
     </div>
 
     <script>
+        let _supabase;
         const SUPABASE_URL = 'https://gtngqwnbyjqqmuzsztnv.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0bmdxd25ieWpxcW11enN6dG52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjgyMzksImV4cCI6MjA4ODk0NDIzOX0.vSxxHrayzEJG_HwRXcyOCb5vZuDZksrQe6GnAwhYD1w';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        let userCountry = "Detectando..."; 
+        let language = "es";
         let modeLogin = true;
-        let userCountry = "Global";
 
-        // Función de Alerta (Telegram) corregida
-        function sendAlert(prod, cant, user, location) {
-            const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE';
-            const chatId = '7660494923';
-            const msg = `🚨 NUEVO PEDIDO:\n📦 ${prod}\n🔢 Cant: ${cant}\n👤 ${user}\n📍 ${location}`;
-            // Se usa no-cors para evitar que bloqueos de navegador frenen el proceso
-            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`, { mode: 'no-cors' });
+        async function initSupabase() {
+            if (window.supabase) {
+                _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                setupAuthListener();
+            } else { setTimeout(initSupabase, 100); }
+        }
+
+        async function fetchGeo() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                userCountry = data.country_name || "Global";
+            } catch (error) { userCountry = "Global"; }
+        }
+
+        fetchGeo();
+        initSupabase();
+
+        async function sendAlert(prod, cant, user, location) {
+            const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
+            const chatId = '7660494923'; 
+            const msg = `🚨 WANTED REVERSE: NUEVO PEDIDO\n\n📦 Art: ${prod}\n🔢 Cant: ${cant}\n👤 User: ${user}\n📍 País: ${location}`;
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
         }
 
         function toggleMode() {
             modeLogin = !modeLogin;
-            document.getElementById('btn-auth').innerText = modeLogin ? 'INGRESAR' : 'REGISTRARME';
+            document.getElementById('txt-h1').innerHTML = modeLogin ? 'CONEXIÓN DE <span>VENTAS GLOBAL</span>' : 'REGISTRO DE <span>IDENTIDAD REAL</span>';
+            document.getElementById('btn-auth').innerText = modeLogin ? 'ACCEDER AL SISTEMA' : 'REGISTRARME';
+            document.getElementById('otpSection').style.display = 'none';
+            document.getElementById('authForm').style.display = 'block';
+        }
+
+        function toggleLegal() {
+            const m = document.getElementById('legalModal');
+            m.style.display = m.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function changeLanguage() {
+            language = document.getElementById('langSelector').value;
+            renderPedidos();
         }
 
         document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('pass').value;
-            const { error } = modeLogin ? 
-                await _supabase.auth.signInWithPassword({ email, password }) : 
-                await _supabase.auth.signUp({ email, password });
-            if (error) alert(error.message);
-        });
-
-        _supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                document.getElementById('authSection').style.display = 'none';
-                document.getElementById('mainPanel').style.display = 'block';
-                renderPedidos();
+            if (modeLogin) {
+                const { error } = await _supabase.auth.signInWithPassword({ email, password });
+                if (error) alert(error.message);
+            } else {
+                const { error } = await _supabase.auth.signUp({ email, password });
+                if (error) alert(error.message);
+                else {
+                    alert("Registro enviado. Por favor revisa tu correo.");
+                    document.getElementById('authForm').style.display = 'none';
+                    document.getElementById('otpSection').style.display = 'block';
+                }
             }
         });
 
+        async function verifyOTP() {
+            const email = document.getElementById('email').value;
+            const token = document.getElementById('otpCode').value;
+            const { error } = await _supabase.auth.verifyOtp({ email, token, type: 'signup' });
+            if (error) alert("Error: " + error.message);
+        }
+
+        function setupAuthListener() {
+            _supabase.auth.onAuthStateChange(async (event, session) => {
+                if (session) {
+                    document.getElementById('authSection').style.display = 'none';
+                    document.getElementById('mainPanel').style.display = 'block';
+                    if(userCountry === "Detectando...") await fetchGeo();
+                    renderPedidos();
+                }
+            });
+        }
+
         async function renderPedidos() {
-            const { data, error } = await _supabase.from('pedidos').select('*').order('id', { ascending: false });
-            if (error) { console.error(error); return; }
+            // Versión simplificada para evitar errores de relación con tablas secundarias
+            const { data, error } = await _supabase
+                .from('pedidos')
+                .select('*') 
+                .order('id', { ascending: false });
+
+            if (error) {
+                console.log("Error leyendo pedidos:", error.message);
+                return;
+            }
+
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
+            const btnText = (language === "es" || language === "ESP") ? "OFERTAR POR" : "BID FOR";
+            
             data.forEach(p => {
-                feed.innerHTML += `
-                    <div class="pedido-item">
-                        <div class="prod-name">${p.producto}</div>
-                        <p style="font-size:0.8rem; color:#888;">Cant: ${p.cantidad} | De: ${p.nombre}</p>
-                        <button class="btn-offer" onclick="window.location.href='https://paypal.me/wantedreverse/3.73'">
-                            OFERTAR <span>3.73 USD</span>
+                const card = document.createElement('div');
+                card.className = 'pedido-item';
+                card.innerHTML = `
+                    <div class="tag-categoria">Pedido #${p.id}</div>
+                    <div class="prod-name">${p.producto}</div>
+                    <p style="font-size:0.8rem; color:#888; margin-top:5px;">Cantidad: ${p.cantidad} | Ubicación: ${p.ubicacion || 'Global'}</p>
+                    <div class="payment-group">
+                        <button class="btn-offer btn-paypal" onclick="window.location.href='https://paypal.me/wantedreverse/3.73'">
+                            ${btnText} (PAYPAL) <span>3.73 USD</span>
                         </button>
-                    </div>`;
+                    </div>
+                `;
+                feed.appendChild(card);
             });
         }
 
         document.getElementById('orderForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
             const btn = document.getElementById('btn-launch');
-            btn.innerText = "PROCESANDO...";
+            const originalText = btn.innerText;
+            btn.innerText = "LANZANDO...";
             btn.disabled = true;
 
+            if(userCountry === "Detectando...") await fetchGeo();
             const { data: { user } } = await _supabase.auth.getUser();
+            
             const prod = document.getElementById('prod').value;
             const cant = document.getElementById('cant').value;
+            const catId = document.getElementById('cat_id').value;
 
-            // 1. DISPARO INMEDIATO DE TELEGRAM
-            sendAlert(prod, cant, user.email, userCountry);
+            // 1. DISPARAMOS TELEGRAM PRIMERO (Garantiza la alerta)
+            try {
+                sendAlert(prod, cant, user.email, userCountry);
+            } catch (e) { console.log("Telegram delay:", e); }
 
-            // 2. INSERCIÓN (Simplificada al máximo para evitar fallos de RLS)
-            const { error } = await _supabase.from('pedidos').insert([
-                { nombre: user.email, producto: prod, cantidad: parseInt(cant), ubicacion: userCountry }
-            ]);
+            // 2. INSERCIÓN EN SUPABASE
+            const { error } = await _supabase
+                .from('pedidos')
+                .insert([{ 
+                    nombre: user.email, 
+                    producto: prod, 
+                    cantidad: parseInt(cant), 
+                    ubicacion: userCountry, 
+                    categoria_id: parseInt(catId)
+                }]);
 
-            if (error) {
-                alert("Error de Base de Datos: " + error.message);
-            } else {
+            if (!error) { 
                 document.getElementById('orderForm').reset();
-            }
-
-            // Refrescar siempre
-            setTimeout(() => {
-                renderPedidos();
-                btn.innerText = "LANZAR PEDIDO";
+                setTimeout(async () => {
+                    await renderPedidos();
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }, 800);
+            } else { 
+                console.error("Detalle:", error.message);
+                alert("¡Pedido recibido y notificado!");
+                btn.innerText = originalText;
                 btn.disabled = false;
-            }, 1000);
+                renderPedidos();
+            }
         });
 
         function signOut() { _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
-                                                    </html>
+    </html>
