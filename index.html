@@ -76,14 +76,14 @@
         .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
         .btn-paypal { background: var(--azul-paypal); color: #fff; }
 
-        /* NUEVOS ESTILOS ACORDEÓN (MENÚ DESPLEGABLE) */
-        .accordion-container { margin-top: 30px; width: 100%; }
-        .accordion-item { background: #111; border: 1px solid #333; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
-        .accordion-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--amarillo); font-weight: bold; font-size: 0.9rem; background: #1a1a1a; }
-        .accordion-content { display: none; padding: 15px; font-size: 0.8rem; color: #ccc; line-height: 1.5; border-top: 1px solid #222; text-align: left; }
-        .accordion-item.active .accordion-content { display: block; }
-        .accordion-header::after { content: '+'; font-size: 1.2rem; }
-        .accordion-item.active .accordion-header::after { content: '-'; }
+        /* ESTILOS DEL MENÚ DESPLEGABLE REFORMULADO */
+        .dropdown-menu { width: 100%; margin-top: 30px; }
+        .dropdown-item { background: #111; border: 1px solid #333; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+        .dropdown-trigger { width: 100%; padding: 15px; background: #1a1a1a; color: var(--amarillo); font-weight: bold; border: none; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: inherit; font-size: 0.9rem; }
+        .dropdown-content { display: none; padding: 15px; color: #ccc; font-size: 0.8rem; line-height: 1.5; border-top: 1px solid #222; }
+        .dropdown-item.active .dropdown-content { display: block; }
+        .dropdown-trigger::after { content: '▼'; font-size: 0.7rem; color: var(--gris-texto); }
+        .dropdown-item.active .dropdown-trigger::after { content: '▲'; }
     </style>
 </head>
 <body>
@@ -178,36 +178,26 @@
 
             <div id="feed"></div>
 
-            <div class="accordion-container">
-                <div class="accordion-item">
-                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">Preguntas Frecuentes (FAQ)</div>
-                    <div class="accordion-content">
+            <div class="dropdown-menu">
+                <div class="dropdown-item">
+                    <button class="dropdown-trigger" onclick="this.parentElement.classList.toggle('active')">Preguntas Frecuentes</button>
+                    <div class="dropdown-content">
                         <strong>¿Por qué pagar $3,73 USD?</strong><br>
                         Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos, evitando spam y estafas en el marketplace.<br><br>
                         <strong>¿Qué recibo al pagar?</strong><br>
-                        Acceso directo al contacto del comprador para cerrar la venta sin intermediarios. La entrega y el método de envío corren por cuenta exclusiva de las partes. WantedReverse solo acerca la oferta y la demanda.
+                        Acceso directo al contacto del comprador para cerrar la venta sin intermediarios. La entrega y el método de envío corren por cuenta exclusiva de las partes. **WantedReverse** solo acerca la oferta y la demanda.
                     </div>
                 </div>
 
-                <div class="accordion-item">
-                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">Normativas de Seguridad y Estafas</div>
-                    <div class="accordion-content">
-                        1. <strong>Verificación:</strong> Siempre solicite fotos reales y actualizadas del producto antes de cualquier transacción.<br><br>
-                        2. <strong>Pagos Seguros:</strong> Recomendamos el uso de plataformas que ofrezcan protección al comprador. Evite transferencias directas irreversibles a desconocidos.<br><br>
-                        3. <strong>Reportes:</strong> Si detecta un comportamiento sospechoso o un intento de fraude, repórtelo inmediatamente a nuestro equipo de soporte.<br><br>
-                        4. <strong>Intermediación:</strong> WantedReverse NO retiene dinero de ventas ni garantiza la entrega física. El trato es 100% entre usuario y usuario.
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">Términos y Soporte Legal</div>
-                    <div class="accordion-content">
+                <div class="dropdown-item">
+                    <button class="dropdown-trigger" onclick="this.parentElement.classList.toggle('active')">Términos y Protección Legal</button>
+                    <div class="dropdown-content">
                         <strong>TÉRMINOS Y CONDICIONES (WantedReverse)</strong><br><br>
                         1. <strong>Naturaleza:</strong> WantedReverse facilita la conexión entre demanda y oferta.<br>
                         2. <strong>Tasa de Conexión:</strong> El pago desbloquea la identidad del comprador interesado.<br>
                         3. <strong>No Reembolso:</strong> Por la naturaleza del servicio digital inmediato, no se realizan devoluciones tras el pago.<br>
-                        4. <strong>Logística:</strong> Los usuarios son responsables de acordar y concretar la entrega. La plataforma no interviene en el envío ni en la verificación física.<br><br>
-                        <strong>Soporte:</strong> Para cualquier duda legal o técnica, escriba a nuestro correo oficial de asistencia.
+                        4. <strong>Logística y Entrega:</strong> Los usuarios son responsables de acordar y concretar la entrega de los productos. La plataforma no interviene en el envío ni en la verificación física de los mismos.<br><br>
+                        <strong>ADVERTENCIA DE SEGURIDAD:</strong> No comparta datos bancarios fuera de plataformas seguras. WantedReverse no garantiza la legitimidad de los productos físicos transaccionados entre terceros.
                     </div>
                 </div>
             </div>
