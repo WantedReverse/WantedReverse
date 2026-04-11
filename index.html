@@ -76,12 +76,15 @@
         .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
         .btn-paypal { background: var(--azul-paypal); color: #fff; }
 
-        .faq-section { background: #111; padding: 20px; border-radius: 15px; margin-top: 30px; text-align: left; }
-        .faq-question { color: var(--amarillo); font-weight: bold; font-size: 0.85rem; margin-top: 10px; }
-        .faq-answer { color: var(--gris-texto); font-size: 0.8rem; margin-bottom: 10px; line-height: 1.4; }
-
-        .legal-link { font-size: 0.7rem; color: var(--gris-texto); cursor: pointer; display: block; text-align: center; margin-top: 20px; text-decoration: underline; }
-        #legalModal { display: none; font-size: 0.75rem; color: #ccc; text-align: left; background: #000; padding: 20px; border-radius: 15px; border: 1px solid #444; margin-top: 15px; }
+        /* ESTILOS DEL MENÚ DESPLEGABLE (FAQ Y LEGAL) */
+        .accordion-container { margin-top: 30px; width: 100%; }
+        .accordion-item { background: #111; border: 1px solid #222; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+        .accordion-header { background: #1a1a1a; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--amarillo); font-weight: bold; font-size: 0.85rem; }
+        .accordion-header::after { content: '▼'; font-size: 0.6rem; transition: transform 0.3s; }
+        .accordion-item.active .accordion-header::after { transform: rotate(180deg); }
+        .accordion-content { display: none; padding: 15px; background: #0a0a0a; color: var(--gris-texto); font-size: 0.8rem; line-height: 1.4; border-top: 1px solid #222; }
+        .accordion-item.active .accordion-content { display: block; }
+        .legal-tag { color: var(--amarillo); font-weight: bold; display: block; margin-top: 10px; text-transform: uppercase; font-size: 0.7rem; }
     </style>
 </head>
 <body>
@@ -176,21 +179,32 @@
 
             <div id="feed"></div>
 
-            <div class="faq-section" id="faq-box">
-                <h3 style="margin-top:0; font-size: 1rem;">Preguntas Frecuentes</h3>
-                <div class="faq-question">¿Por qué pagar $3,73 USD?</div>
-                <div class="faq-answer">Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos, evitando spam y estafas en el marketplace.</div>
-                <div class="faq-question">¿Qué recibo al pagar?</div>
-                <div class="faq-answer">Acceso directo al contacto del comprador para cerrar la venta sin intermediarios. La entrega y el método de envío corren por cuenta exclusiva de las partes. **WantedReverse** solo acerca la oferta y la demanda.</div>
-            </div>
-            
-            <p class="legal-link" onclick="toggleLegal()">Ver Términos y Protección Legal</p>
-            <div id="legalModal">
-                <strong>TÉRMINOS Y CONDICIONES (WantedReverse)</strong><br><br>
-                1. <strong>Naturaleza:</strong> WantedReverse facilita la conexión entre demanda y oferta.<br>
-                2. <strong>Tasa de Conexión:</strong> El pago desbloquea la identidad del comprador interesado.<br>
-                3. <strong>No Reembolso:</strong> Por la naturaleza del servicio digital inmediato, no se realizan devoluciones tras el pago.<br>
-                4. <strong>Logística y Entrega:</strong> Los usuarios son responsables de acordar y concretar la entrega de los productos. La plataforma no interviene en el envío ni en la verificación física de los mismos.
+            <div class="accordion-container">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">Preguntas Frecuentes (FAQ)</div>
+                    <div class="accordion-content">
+                        <p><strong>¿Por qué pagar $3,73 USD?</strong><br>Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos de contacto, evitando spam y perfiles falsos en el sistema.</p>
+                        <p><strong>¿Qué recibo al realizar el pago?</strong><br>Recibes acceso instantáneo al contacto directo del comprador para negociar y cerrar la venta sin más intermediarios.</p>
+                        <p><strong>¿WantedReverse garantiza el producto?</strong><br>No. Somos un puente de conexión. La verificación del estado del producto y la seguridad en el envío es responsabilidad de las partes.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">Términos y Condiciones Legales</div>
+                    <div class="accordion-content">
+                        <span class="legal-tag">1. Rol de la Plataforma</span>
+                        WantedReverse facilita la conexión entre la demanda de compradores y la oferta de vendedores globales. No participa en la logística ni en el cobro de los productos.
+                        
+                        <span class="legal-tag">2. Tasa de Conexión</span>
+                        El pago de $3,73 USD es una tarifa de servicio digital para desbloquear la información del comprador.
+                        
+                        <span class="legal-tag">3. Política de No Reembolso</span>
+                        Al tratarse de un servicio digital de acceso inmediato a información sensible, no se aceptan devoluciones ni reembolsos una vez efectuado el pago.
+                        
+                        <span class="legal-tag">4. Seguridad y Logística</span>
+                        Los usuarios asumen total responsabilidad al acordar envíos y métodos de pago externos. WantedReverse recomienda siempre verificar la identidad de la contraparte.
+                    </div>
+                </div>
             </div>
 
             <p onclick="signOut()" style="color:red; font-size:0.7rem; cursor:pointer; text-align:center; margin-top:40px; opacity:0.5;">CERRAR SESIÓN SEGURA</p>
@@ -206,7 +220,6 @@
         let language = "es";
         let modeLogin = true;
 
-        // Diccionario de categorías para el filtro
         const categoriasMap = {
             "1": "Vehículos Accesorios", "2": "Agro", "3": "Alimentos Bebidas", "4": "Mascotas Animales",
             "5": "Antigüedades", "6": "Arte Librería", "7": "Audio", "8": "Bebés", "9": "Belleza Personal",
@@ -216,6 +229,12 @@
             "22": "Instrumentos", "23": "Joyas Relojes", "24": "Juegos Juguetes", "25": "Libros Comics",
             "26": "Música Series", "27": "Ropa Accesorios", "28": "Salud Médico", "29": "Software", "30": "Otros"
         };
+
+        // FUNCIÓN NUEVA PARA EL ACORDEÓN
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            item.classList.toggle('active');
+        }
 
         async function initSupabase() {
             if (window.supabase) {
@@ -248,11 +267,6 @@
             document.getElementById('btn-auth').innerText = modeLogin ? 'ACCEDER AL SISTEMA' : 'REGISTRARME';
             document.getElementById('otpSection').style.display = 'none';
             document.getElementById('authForm').style.display = 'block';
-        }
-
-        function toggleLegal() {
-            const m = document.getElementById('legalModal');
-            m.style.display = m.style.display === 'block' ? 'none' : 'block';
         }
 
         function changeLanguage() {
@@ -302,7 +316,6 @@
             });
         }
 
-        // FUNCIÓN FILTRO EN TIEMPO REAL
         document.getElementById('mainSearch').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
             const items = document.querySelectorAll('.pedido-item');
@@ -335,7 +348,6 @@
                 const catName = categoriasMap[p.categoria_id] || "Otros";
                 const card = document.createElement('div');
                 card.className = 'pedido-item';
-                // Guardamos el nombre de la categoría para que el buscador lo encuentre
                 card.setAttribute('data-cat-name', catName); 
                 card.innerHTML = `
                     <div class="tag-categoria">Pedido #${p.id} | ${catName}</div>
@@ -373,7 +385,7 @@
             }]);
 
             if (error) {
-                alert("Error de conexión con la lista. Verifica permisos en Supabase.");
+                alert("Error de conexión con la lista.");
             } else {
                 document.getElementById('orderForm').reset();
                 setTimeout(renderPedidos, 500); 
