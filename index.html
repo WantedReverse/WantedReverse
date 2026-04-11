@@ -85,6 +85,8 @@
         .dropdown-item.active .dropdown-trigger::after { content: '▲'; }
         .faq-q { color: var(--amarillo); font-weight: bold; margin-top: 15px; display: block; }
         .faq-a { color: var(--gris-texto); margin-bottom: 10px; display: block; }
+        .legal-item { margin-bottom: 15px; }
+        .legal-title { color: var(--amarillo); font-weight: bold; display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -126,7 +128,7 @@
                 <button onclick="verifyOTP()" class="btn-main">VERIFICAR CÓDIGO</button>
             </div>
 
-            <p class="legal-link" onclick="toggleMode()" id="switchBtn">¿Nuevo usuario? Crear cuenta</p>
+            <p class="legal-link" onclick="toggleMode()" id="switchBtn" style="font-size: 0.7rem; color: var(--gris-texto); cursor: pointer; display: block; text-align: center; margin-top: 20px; text-decoration: underline;">¿Nuevo usuario? Crear cuenta</p>
         </div>
 
         <div id="mainPanel" style="display: none;">
@@ -187,31 +189,44 @@
                         <span class="faq-a">El pago corresponde a una tasa de conexión que permite acceder al contacto del comprador interesado. Esto ayuda a filtrar usuarios no serios, reducir spam y evitar intentos de fraude. Este pago es exclusivamente por el acceso al contacto, no garantiza una venta.</span>
 
                         <span class="faq-q">¿Qué recibo al pagar?</span>
-                        <span class="faq-a">Al realizar el pago, obtendrás acceso directo al contacto del comprador. WantedReverse no participa en la negociación, el pago ni la entrega del producto.</span>
+                        <span class="faq-a">Al realizar el pago, obtendrás acceso directo al contacto del comprador. WantedReverse no participa en la negociación, el pago ni la entrega del producto. Toda interacción posterior depende exclusivamente de las partes involucradas.</span>
 
-                        <span class="faq-q">¿Se garantiza que el comprador responderá?</span>
+                        <span class="faq-q">¿Se garantiza que el comprador responderá o que la venta se concretará?</span>
                         <span class="faq-a">No. WantedReverse no garantiza respuestas, acuerdos ni resultados. El éxito de la operación depende únicamente de los usuarios.</span>
 
                         <span class="faq-q">¿Puedo solicitar un reembolso?</span>
                         <span class="faq-a">No. Debido a la naturaleza digital e inmediata del servicio, no se realizan devoluciones una vez efectuado el pago.</span>
 
-                        <span class="faq-q">¿Qué está prohibido?</span>
-                        <span class="faq-a">Publicar información falsa, vender productos ilegales o utilizar la plataforma para fraudes. Las cuentas que incumplan esto serán eliminadas.</span>
+                        <span class="faq-q">¿Quién se encarga del pago y la entrega del producto?</span>
+                        <span class="faq-a">Los usuarios son los únicos responsables de acordar y concretar el pago, la entrega y cualquier condición de la transacción. WantedReverse no interviene en ninguna etapa de la operación.</span>
+
+                        <span class="faq-q">¿Qué sucede si tengo un problema con otro usuario?</span>
+                        <span class="faq-a">Cualquier conflicto, incumplimiento o fraude debe resolverse directamente entre las partes. WantedReverse actúa únicamente como intermediario tecnológico y no asume responsabilidad sobre las transacciones.</span>
+
+                        <span class="faq-q">¿Qué está prohibido en la plataforma?</span>
+                        <span class="faq-a">No está permitido: Publicar información falsa o engañosa, vender productos ilegales o prohibidos, utilizar la plataforma para estafas o fraudes.</span>
+
+                        <span class="faq-q">¿Qué pasa con mis datos personales?</span>
+                        <span class="faq-a">Los datos se utilizan únicamente para facilitar la conexión entre compradores y vendedores. Al usar la plataforma, aceptas que tu información de contacto sea compartida con otros usuarios bajo este fin.</span>
                         
-                        <p style="font-size: 0.7rem; color: var(--amarillo); margin-top:15px;"><strong>Advertencia:</strong> WantedReverse solo conecta oferta y demanda. Negocia bajo tu propio riesgo.</p>
+                        <p style="font-size: 0.7rem; color: var(--amarillo); margin-top:15px;"><strong>Advertencia importante:</strong> WantedReverse solo conecta oferta y demanda. Antes de concretar cualquier operación, verifica la información y negocia bajo tu propio riesgo.</p>
                     </div>
                 </div>
 
                 <div class="dropdown-item">
                     <button class="dropdown-trigger" onclick="this.parentElement.classList.toggle('active')">Términos y Condiciones Legales</button>
                     <div class="dropdown-content">
-                        <strong>1. Naturaleza del servicio:</strong> WantedReverse es un intermediario tecnológico, sin participación en la negociación o entrega.<br><br>
-                        <strong>2. Tasa de conexión:</strong> El pago es exclusivamente por el acceso a la información de contacto.<br><br>
-                        <strong>3. No reembolso:</strong> Servicio digital de entrega inmediata, no reversible.<br><br>
-                        <strong>4. Uso bajo propio riesgo:</strong> No somos responsables por fraudes o pérdidas derivadas de acuerdos entre usuarios.<br><br>
-                        <strong>5. Prohibiciones:</strong> Contenido falso o ilícito resultará en eliminación de cuenta.<br><br>
-                        <strong>6. Ley aplicable:</strong> Estos términos se rigen por las leyes de la República Argentina.<br><br>
-                        <strong>7. Protección de datos:</strong> La información solo se usa para facilitar la conexión comercial entre las partes.
+                        <div class="legal-item"><span class="legal-title">1. Naturaleza del servicio</span> WantedReverse es una plataforma digital que facilita la conexión entre usuarios interesados en comprar y vender productos. La plataforma actúa únicamente como intermediario tecnológico.</div>
+                        <div class="legal-item"><span class="legal-title">2. Tasa de conexión</span> El acceso a los datos de contacto requiere el pago de una tasa. Este pago no implica garantía de venta, respuesta o resultado alguno.</div>
+                        <div class="legal-item"><span class="legal-title">3. No reembolso</span> Debido a la naturaleza digital e irreversible del servicio, no se realizan devoluciones ni reembolsos una vez efectuado el pago.</div>
+                        <div class="legal-item"><span class="legal-title">4. Uso bajo propio riesgo</span> El uso se realiza bajo exclusiva responsabilidad del usuario. WantedReverse no se hace responsable por fraudes, incumplimientos o perjuicios.</div>
+                        <div class="legal-item"><span class="legal-title">5. Prohibición de usos indebidos</span> Queda prohibido publicar contenido falso, ofrecer productos ilegales o estafar. Se reserva el derecho de eliminar cuentas ante incumplimientos.</div>
+                        <div class="legal-item"><span class="legal-title">6. Renuncia de garantías</span> El servicio se proporciona "tal cual", sin garantías de veracidad de información o calidad de productos.</div>
+                        <div class="legal-item"><span class="legal-title">7. Limitación de responsabilidad</span> La responsabilidad total se limitará al monto efectivamente pagado por el usuario dentro de la plataforma.</div>
+                        <div class="legal-item"><span class="legal-title">8. Jurisdicción y ley aplicable</span> Los presentes términos se rigen por las leyes de la República Argentina.</div>
+                        <div class="legal-item"><span class="legal-title">9. Protección de datos personales</span> Los datos serán utilizados exclusivamente para facilitar la conexión comercial. WantedReverse no comercializa datos personales.</div>
+                        <div class="legal-item"><span class="legal-title">10. Advertencias</span> El usuario reconoce que WantedReverse no participa en las transacciones ni verifica a los usuarios.</div>
+                        <div class="legal-item"><span class="legal-title">11. Reportes y control</span> WantedReverse se reserva el derecho de bloquear cuentas que representen un riesgo para la comunidad.</div>
                     </div>
                 </div>
             </div>
@@ -400,4 +415,4 @@
         function signOut() { _supabase.auth.signOut(); location.reload(); }
     </script>
 </body>
-    </html>
+                                      </html>
