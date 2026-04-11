@@ -63,7 +63,6 @@
         input, select { width: 100%; padding: 16px; margin-bottom: 15px; background: #000; border: 1px solid #333; border-radius: 12px; color: #fff; box-sizing: border-box; font-size: 1rem; appearance: none; }
         .btn-main { width: 100%; padding: 18px; background: var(--amarillo); color: #000; border: none; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
-        /* Estilos del Buscador */
         .search-wrapper { position: relative; margin-bottom: 20px; }
         .search-wrapper input { padding-right: 45px; border-color: var(--amarillo); border-radius: 50px; background: #000; }
         .search-icon { position: absolute; right: 15px; top: 18px; color: var(--amarillo); font-size: 1.2rem; pointer-events: none; }
@@ -76,14 +75,16 @@
         .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
         .btn-paypal { background: var(--azul-paypal); color: #fff; }
 
-        /* ESTILOS DEL MENÚ DESPLEGABLE REFORMULADO */
-        .dropdown-menu { width: 100%; margin-top: 30px; }
+        /* NUEVOS ESTILOS PARA MENÚS DESPLEGABLES */
+        .dropdown-container { margin-top: 30px; width: 100%; }
         .dropdown-item { background: #111; border: 1px solid #333; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
         .dropdown-trigger { width: 100%; padding: 15px; background: #1a1a1a; color: var(--amarillo); font-weight: bold; border: none; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: inherit; font-size: 0.9rem; }
-        .dropdown-content { display: none; padding: 15px; color: #ccc; font-size: 0.8rem; line-height: 1.5; border-top: 1px solid #222; }
+        .dropdown-content { display: none; padding: 20px; color: #ccc; font-size: 0.8rem; line-height: 1.5; border-top: 1px solid #222; text-align: left; }
         .dropdown-item.active .dropdown-content { display: block; }
-        .dropdown-trigger::after { content: '▼'; font-size: 0.7rem; color: var(--gris-texto); }
+        .dropdown-trigger::after { content: '▼'; font-size: 0.7rem; color: var(--gris-texto); transition: 0.3s; }
         .dropdown-item.active .dropdown-trigger::after { content: '▲'; }
+        .faq-q { color: var(--amarillo); font-weight: bold; margin-top: 15px; display: block; }
+        .faq-a { color: var(--gris-texto); margin-bottom: 10px; display: block; }
     </style>
 </head>
 <body>
@@ -178,26 +179,39 @@
 
             <div id="feed"></div>
 
-            <div class="dropdown-menu">
+            <div class="dropdown-container">
                 <div class="dropdown-item">
-                    <button class="dropdown-trigger" onclick="this.parentElement.classList.toggle('active')">Preguntas Frecuentes</button>
+                    <button class="dropdown-trigger" onclick="this.parentElement.classList.toggle('active')">Preguntas Frecuentes (FAQ)</button>
                     <div class="dropdown-content">
-                        <strong>¿Por qué pagar $3,73 USD?</strong><br>
-                        Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos, evitando spam y estafas en el marketplace.<br><br>
-                        <strong>¿Qué recibo al pagar?</strong><br>
-                        Acceso directo al contacto del comprador para cerrar la venta sin intermediarios. La entrega y el método de envío corren por cuenta exclusiva de las partes. **WantedReverse** solo acerca la oferta y la demanda.
+                        <span class="faq-q">¿Por qué debo pagar por acceder al contacto del comprador?</span>
+                        <span class="faq-a">El pago corresponde a una tasa de conexión que permite acceder al contacto del comprador interesado. Esto ayuda a filtrar usuarios no serios, reducir spam y evitar intentos de fraude. Este pago es exclusivamente por el acceso al contacto, no garantiza una venta.</span>
+
+                        <span class="faq-q">¿Qué recibo al pagar?</span>
+                        <span class="faq-a">Al realizar el pago, obtendrás acceso directo al contacto del comprador. WantedReverse no participa en la negociación, el pago ni la entrega del producto.</span>
+
+                        <span class="faq-q">¿Se garantiza que el comprador responderá?</span>
+                        <span class="faq-a">No. WantedReverse no garantiza respuestas, acuerdos ni resultados. El éxito de la operación depende únicamente de los usuarios.</span>
+
+                        <span class="faq-q">¿Puedo solicitar un reembolso?</span>
+                        <span class="faq-a">No. Debido a la naturaleza digital e inmediata del servicio, no se realizan devoluciones una vez efectuado el pago.</span>
+
+                        <span class="faq-q">¿Qué está prohibido?</span>
+                        <span class="faq-a">Publicar información falsa, vender productos ilegales o utilizar la plataforma para fraudes. Las cuentas que incumplan esto serán eliminadas.</span>
+                        
+                        <p style="font-size: 0.7rem; color: var(--amarillo); margin-top:15px;"><strong>Advertencia:</strong> WantedReverse solo conecta oferta y demanda. Negocia bajo tu propio riesgo.</p>
                     </div>
                 </div>
 
                 <div class="dropdown-item">
-                    <button class="dropdown-trigger" onclick="this.parentElement.classList.toggle('active')">Términos y Protección Legal</button>
+                    <button class="dropdown-trigger" onclick="this.parentElement.classList.toggle('active')">Términos y Condiciones Legales</button>
                     <div class="dropdown-content">
-                        <strong>TÉRMINOS Y CONDICIONES (WantedReverse)</strong><br><br>
-                        1. <strong>Naturaleza:</strong> WantedReverse facilita la conexión entre demanda y oferta.<br>
-                        2. <strong>Tasa de Conexión:</strong> El pago desbloquea la identidad del comprador interesado.<br>
-                        3. <strong>No Reembolso:</strong> Por la naturaleza del servicio digital inmediato, no se realizan devoluciones tras el pago.<br>
-                        4. <strong>Logística y Entrega:</strong> Los usuarios son responsables de acordar y concretar la entrega de los productos. La plataforma no interviene en el envío ni en la verificación física de los mismos.<br><br>
-                        <strong>ADVERTENCIA DE SEGURIDAD:</strong> No comparta datos bancarios fuera de plataformas seguras. WantedReverse no garantiza la legitimidad de los productos físicos transaccionados entre terceros.
+                        <strong>1. Naturaleza del servicio:</strong> WantedReverse es un intermediario tecnológico, sin participación en la negociación o entrega.<br><br>
+                        <strong>2. Tasa de conexión:</strong> El pago es exclusivamente por el acceso a la información de contacto.<br><br>
+                        <strong>3. No reembolso:</strong> Servicio digital de entrega inmediata, no reversible.<br><br>
+                        <strong>4. Uso bajo propio riesgo:</strong> No somos responsables por fraudes o pérdidas derivadas de acuerdos entre usuarios.<br><br>
+                        <strong>5. Prohibiciones:</strong> Contenido falso o ilícito resultará en eliminación de cuenta.<br><br>
+                        <strong>6. Ley aplicable:</strong> Estos términos se rigen por las leyes de la República Argentina.<br><br>
+                        <strong>7. Protección de datos:</strong> La información solo se usa para facilitar la conexión comercial entre las partes.
                     </div>
                 </div>
             </div>
