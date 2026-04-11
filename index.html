@@ -76,15 +76,14 @@
         .btn-offer { width: 100%; padding: 14px; border-radius: 10px; font-weight: 900; border: none; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.75rem; }
         .btn-paypal { background: var(--azul-paypal); color: #fff; }
 
-        /* ESTILOS DEL MENÚ DESPLEGABLE (FAQ Y LEGAL) */
+        /* NUEVOS ESTILOS ACORDEÓN (MENÚ DESPLEGABLE) */
         .accordion-container { margin-top: 30px; width: 100%; }
-        .accordion-item { background: #111; border: 1px solid #222; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
-        .accordion-header { background: #1a1a1a; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--amarillo); font-weight: bold; font-size: 0.85rem; }
-        .accordion-header::after { content: '▼'; font-size: 0.6rem; transition: transform 0.3s; }
-        .accordion-item.active .accordion-header::after { transform: rotate(180deg); }
-        .accordion-content { display: none; padding: 15px; background: #0a0a0a; color: var(--gris-texto); font-size: 0.8rem; line-height: 1.4; border-top: 1px solid #222; }
+        .accordion-item { background: #111; border: 1px solid #333; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+        .accordion-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--amarillo); font-weight: bold; font-size: 0.9rem; background: #1a1a1a; }
+        .accordion-content { display: none; padding: 15px; font-size: 0.8rem; color: #ccc; line-height: 1.5; border-top: 1px solid #222; text-align: left; }
         .accordion-item.active .accordion-content { display: block; }
-        .legal-tag { color: var(--amarillo); font-weight: bold; display: block; margin-top: 10px; text-transform: uppercase; font-size: 0.7rem; }
+        .accordion-header::after { content: '+'; font-size: 1.2rem; }
+        .accordion-item.active .accordion-header::after { content: '-'; }
     </style>
 </head>
 <body>
@@ -181,28 +180,34 @@
 
             <div class="accordion-container">
                 <div class="accordion-item">
-                    <div class="accordion-header" onclick="toggleAccordion(this)">Preguntas Frecuentes (FAQ)</div>
+                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">Preguntas Frecuentes (FAQ)</div>
                     <div class="accordion-content">
-                        <p><strong>¿Por qué pagar $3,73 USD?</strong><br>Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos de contacto, evitando spam y perfiles falsos en el sistema.</p>
-                        <p><strong>¿Qué recibo al realizar el pago?</strong><br>Recibes acceso instantáneo al contacto directo del comprador para negociar y cerrar la venta sin más intermediarios.</p>
-                        <p><strong>¿WantedReverse garantiza el producto?</strong><br>No. Somos un puente de conexión. La verificación del estado del producto y la seguridad en el envío es responsabilidad de las partes.</p>
+                        <strong>¿Por qué pagar $3,73 USD?</strong><br>
+                        Es la tasa de conexión que asegura que solo vendedores reales accedan a los datos, evitando spam y estafas en el marketplace.<br><br>
+                        <strong>¿Qué recibo al pagar?</strong><br>
+                        Acceso directo al contacto del comprador para cerrar la venta sin intermediarios. La entrega y el método de envío corren por cuenta exclusiva de las partes. WantedReverse solo acerca la oferta y la demanda.
                     </div>
                 </div>
 
                 <div class="accordion-item">
-                    <div class="accordion-header" onclick="toggleAccordion(this)">Términos y Condiciones Legales</div>
+                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">Normativas de Seguridad y Estafas</div>
                     <div class="accordion-content">
-                        <span class="legal-tag">1. Rol de la Plataforma</span>
-                        WantedReverse facilita la conexión entre la demanda de compradores y la oferta de vendedores globales. No participa en la logística ni en el cobro de los productos.
-                        
-                        <span class="legal-tag">2. Tasa de Conexión</span>
-                        El pago de $3,73 USD es una tarifa de servicio digital para desbloquear la información del comprador.
-                        
-                        <span class="legal-tag">3. Política de No Reembolso</span>
-                        Al tratarse de un servicio digital de acceso inmediato a información sensible, no se aceptan devoluciones ni reembolsos una vez efectuado el pago.
-                        
-                        <span class="legal-tag">4. Seguridad y Logística</span>
-                        Los usuarios asumen total responsabilidad al acordar envíos y métodos de pago externos. WantedReverse recomienda siempre verificar la identidad de la contraparte.
+                        1. <strong>Verificación:</strong> Siempre solicite fotos reales y actualizadas del producto antes de cualquier transacción.<br><br>
+                        2. <strong>Pagos Seguros:</strong> Recomendamos el uso de plataformas que ofrezcan protección al comprador. Evite transferencias directas irreversibles a desconocidos.<br><br>
+                        3. <strong>Reportes:</strong> Si detecta un comportamiento sospechoso o un intento de fraude, repórtelo inmediatamente a nuestro equipo de soporte.<br><br>
+                        4. <strong>Intermediación:</strong> WantedReverse NO retiene dinero de ventas ni garantiza la entrega física. El trato es 100% entre usuario y usuario.
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="this.parentElement.classList.toggle('active')">Términos y Soporte Legal</div>
+                    <div class="accordion-content">
+                        <strong>TÉRMINOS Y CONDICIONES (WantedReverse)</strong><br><br>
+                        1. <strong>Naturaleza:</strong> WantedReverse facilita la conexión entre demanda y oferta.<br>
+                        2. <strong>Tasa de Conexión:</strong> El pago desbloquea la identidad del comprador interesado.<br>
+                        3. <strong>No Reembolso:</strong> Por la naturaleza del servicio digital inmediato, no se realizan devoluciones tras el pago.<br>
+                        4. <strong>Logística:</strong> Los usuarios son responsables de acordar y concretar la entrega. La plataforma no interviene en el envío ni en la verificación física.<br><br>
+                        <strong>Soporte:</strong> Para cualquier duda legal o técnica, escriba a nuestro correo oficial de asistencia.
                     </div>
                 </div>
             </div>
@@ -229,12 +234,6 @@
             "22": "Instrumentos", "23": "Joyas Relojes", "24": "Juegos Juguetes", "25": "Libros Comics",
             "26": "Música Series", "27": "Ropa Accesorios", "28": "Salud Médico", "29": "Software", "30": "Otros"
         };
-
-        // FUNCIÓN NUEVA PARA EL ACORDEÓN
-        function toggleAccordion(header) {
-            const item = header.parentElement;
-            item.classList.toggle('active');
-        }
 
         async function initSupabase() {
             if (window.supabase) {
@@ -385,7 +384,7 @@
             }]);
 
             if (error) {
-                alert("Error de conexión con la lista.");
+                alert("Error de conexión con la lista. Verifica permisos en Supabase.");
             } else {
                 document.getElementById('orderForm').reset();
                 setTimeout(renderPedidos, 500); 
