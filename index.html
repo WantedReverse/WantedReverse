@@ -414,5 +414,185 @@
 
         function signOut() { _supabase.auth.signOut(); location.reload(); }
     </script>
+    ```
+</script>
+
+<!-- ========================= -->
+<!-- 🚀 CAPA DE OPTIMIZACIÓN -->
+<!-- ========================= -->
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XXXXXXX');
+</script>
+
+<!-- PREVIEW SIN LOGIN -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const authSection = document.getElementById("authSection");
+
+    if(authSection){
+        const preview = document.createElement("div");
+        preview.innerHTML = `
+            <div style="filter: blur(3px); opacity:0.6; pointer-events:none;">
+                <div class="pedido-item">🔥 iPhone 15 Pro Max - Cant: 2</div>
+                <div class="pedido-item">🔥 PlayStation 5 - Cant: 1</div>
+                <div class="pedido-item">🔥 Repuestos Toyota - Cant: 10</div>
+            </div>
+            <p style="text-align:center; font-size:0.8rem; color:#FFD700;">
+                Inicia sesión para desbloquear pedidos reales
+            </p>
+        `;
+        authSection.appendChild(preview);
+    }
+});
+</script>
+
+<!-- FOMO + URGENCIA -->
+<script>
+function injectFOMO(){
+    document.querySelectorAll('.pedido-item').forEach(item => {
+        if(!item.querySelector('.fomo')){
+            const fomo = document.createElement('p');
+            const random = Math.floor(Math.random()*15)+3;
+            const time = Math.floor(Math.random()*30)+10;
+
+            fomo.className = "fomo";
+            fomo.style.fontSize = "0.7rem";
+            fomo.style.color = "#FFD700";
+            fomo.innerText = `🔥 ${random} vendedores ofertando • ⏳ ${time} min restantes`;
+
+            item.appendChild(fomo);
+        }
+    });
+}
+
+const originalRender = window.renderPedidos;
+window.renderPedidos = async function(){
+    if(originalRender) await originalRender();
+    setTimeout(injectFOMO, 300);
+};
+</script>
+
+<!-- TOAST -->
+<style>
+.toast {
+ position: fixed;
+ bottom: 20px;
+ left: 50%;
+ transform: translateX(-50%);
+ background: #111;
+ color: #FFD700;
+ padding: 12px 20px;
+ border-radius: 10px;
+ font-size: 0.8rem;
+ z-index: 9999;
+ opacity: 0;
+ transition: 0.3s;
+}
+.toast.show { opacity: 1; }
+</style>
+
+<script>
+function showToast(msg){
+    const t = document.createElement("div");
+    t.className = "toast";
+    t.innerText = msg;
+    document.body.appendChild(t);
+
+    setTimeout(()=> t.classList.add("show"),100);
+    setTimeout(()=> {
+        t.classList.remove("show");
+        setTimeout(()=>t.remove(),300);
+    },3000);
+}
+</script>
+
+<!-- TRACKING -->
+<script>
+document.addEventListener("click", (e) => {
+    if(e.target.closest(".btn-paypal")){
+        gtag('event', 'click_paypal', {
+            event_category: 'conversion',
+            event_label: 'oferta'
+        });
+        showToast("Redirigiendo a pago seguro...");
+    }
+});
+</script>
+
+<!-- BOTÓN VIRAL -->
+<script>
+function addShareButton(){
+    const container = document.querySelector(".container");
+    if(container && !document.getElementById("shareBtn")){
+        const btn = document.createElement("button");
+        btn.id = "shareBtn";
+        btn.innerText = "INVITAR VENDEDORES 🚀";
+        btn.className = "btn-main";
+        btn.style.marginTop = "10px";
+
+        btn.onclick = () => {
+            if(navigator.share){
+                navigator.share({
+                    title: "WantedReverse",
+                    text: "Mira esta plataforma de subastas inversas",
+                    url: location.href
+                });
+            } else {
+                showToast("Comparte este link: " + location.href);
+            }
+        };
+
+        container.appendChild(btn);
+    }
+}
+
+setTimeout(addShareButton, 2000);
+</script>
+
+<!-- CONFIANZA -->
+<script>
+function injectTrust(){
+    const panel = document.getElementById("mainPanel");
+    if(panel && !document.getElementById("trustBox")){
+        const box = document.createElement("div");
+        box.id = "trustBox";
+        box.className = "card";
+        box.innerHTML = `
+            <p style="font-size:0.8rem;">
+            ✅ +1,284 usuarios activos hoy<br>
+            🚀 +10,000 pedidos publicados<br>
+            🌎 Operando globalmente
+            </p>
+        `;
+        panel.prepend(box);
+    }
+}
+setTimeout(injectTrust, 1500);
+</script>
+
+<!-- MENSAJES -->
+<script>
+document.getElementById("orderForm")?.addEventListener("submit", ()=>{
+    showToast("🚀 Pedido enviado a la red global");
+});
+</script>
+
+<!-- AUTO REFRESH -->
+<script>
+setInterval(()=>{
+    if(document.getElementById("mainPanel")?.style.display === "block"){
+        renderPedidos();
+    }
+}, 30000);
+</script>
+```
+
 </body>
-                            </html>
+</html>
+                            
