@@ -147,7 +147,7 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="favicon.png">
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
@@ -393,22 +393,36 @@
         };
 
         async function initSupabase() {
-            if (window.supabase) {
-                _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                setupAuthListener();
-            } else { setTimeout(initSupabase, 100); }
+            let attempts = 0;
+            while (!window.supabase && attempts < 50) {
+                await new Promise(r => setTimeout(r, 100));
+                attempts++;
+            }
+            if (!window.supabase) {
+                console.error('Supabase no cargó. Verificá tu conexión.');
+                return;
+            }
+            _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            setupAuthListener();
         }
 
         async function fetchGeo() {
             try {
-                const response = await fetch('https://ipapi.co/json/');
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 3000);
+                const response = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+                clearTimeout(timeout);
                 const data = await response.json();
-                if(data.country_name) userCountry = data.country_name;
-            } catch (error) { userCountry = "Argentina"; }
+                if (data.country_name) userCountry = data.country_name;
+            } catch (error) {
+                userCountry = "Argentina";
+            }
         }
 
-        fetchGeo();
-        initSupabase();
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchGeo();
+            initSupabase();
+        });
 
         async function sendAlert(prod, cant, user, location) {
             const token = '8639151291:AAH0njnCbBeGhOd90ZFUnPUFLWS1W-t37AE'; 
@@ -689,3 +703,4 @@
 
 </body>
 </html>
+
